@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">
+
+	<!-- Note: There are advantages to not using the default auto-discovered 
+		persistence.xml name especially when deploying -->
+	<!-- to overzealous containers like WebLogic and WebSphere. -->
+	
+	<!-- Define one or more persistence units here. -->
+	<persistence-unit name="pedal-test" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<mapping-file>META-INF/pedal-test-orm.xml</mapping-file>
+		<!-- Entity class with @Cacheable annotation will be cached -->
+		<shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+	</persistence-unit>
+
+</persistence>
