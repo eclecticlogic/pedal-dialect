@@ -48,7 +48,7 @@ public class JpaConfiguration {
 //    @Bean
 //    DataSource hikari() {
 //        HikariDataSource ds = new HikariDataSource();
-//        ds.setJdbcUrl("jdbc:postgresql://localhost/pedal-loader");
+//        ds.setJdbcUrl("jdbc:postgresql://localhost/pedal");
 //        ds.setUsername("postgres");
 //        ds.setPassword("postgres");
 //        ds.setMaximumPoolSize(3);
@@ -64,7 +64,7 @@ public class JpaConfiguration {
 //    DataSource dbcp() {
 //        BasicDataSource bds = new BasicDataSource();
 //        bds.setDriverClassName("org.postgresql.Driver");
-//        bds.setUrl("jdbc:postgresql://localhost/pedal-loader");
+//        bds.setUrl("jdbc:postgresql://localhost/pedal");
 //        bds.setUsername("postgres");
 //        bds.setPassword("postgres");
 //        bds.setAccessToUnderlyingConnectionAllowed(true); // Very important!
