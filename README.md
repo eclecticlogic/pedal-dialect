@@ -38,7 +38,6 @@ Minimum dependencies that you need to provide in your application:
 
 To enable the `ProviderAccess` interface, create an instance of `HibernateProviderAccessSpiImpl` and give it a reference to the `EntityManagerFactory`. Here is the java code to use in a Spring configuration class:
 
-{% highlight java linenos  %}
     
     @Bean
     HibernateProviderAccessSpiImpl hibernateProvider(EntityManagerFactory factory) {
@@ -47,12 +46,10 @@ To enable the `ProviderAccess` interface, create an instance of `HibernateProvid
         return impl;
     }
 
-{% endhighlight %}
 
 To enable the `CopyCommand` create an instance of it and set the ProviderAccess and an instance of a `ConnectionAccessor`. For e.g., to use it with Tomcat, the following Bean creator method can be used:
 
     
-{% highlight java linenos  %}
 
     @Bean
     public CopyCommand copyCommand(ProviderAccessSpi provider) {
@@ -62,7 +59,6 @@ To enable the `CopyCommand` create an instance of it and set the ProviderAccess 
         return command;
     }
 
-{% endhighlight %}
 
 ## Copy Command features
 
@@ -83,7 +79,6 @@ The `CopyCommand` does support a generic mechanism to support custom-types or wo
 
 Here is the general pattern of usage for the Copy Command:
 
-{% highlight java linenos  %}
 
         @PersistenceContext
         private EntityManager entityManager;
@@ -104,4 +99,3 @@ Here is the general pattern of usage for the Copy Command:
         copyCommand.insert(entityManager, list);
 
 
-{% endhighlight %}       
