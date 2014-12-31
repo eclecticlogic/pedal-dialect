@@ -56,8 +56,6 @@ import org.springframework.beans.BeanUtils;
 import com.eclecticlogic.pedal.connection.ConnectionAccessor;
 import com.eclecticlogic.pedal.provider.Consumer;
 import com.eclecticlogic.pedal.provider.ProviderAccessSpi;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 /**
  * Allows collection of JPA entities to be written to the database using the Postgresql COPY command.
@@ -143,7 +141,7 @@ public class CopyCommand {
                             Math.round(elapsedTime / 10.0) / 100.0);
                 } catch (Exception e) {
                     logger.trace("Command passed: {}", data);
-                    throw Throwables.propagate(e);
+                    throw new RuntimeException(e.getMessage(), e);
                 }
             }
         });
@@ -207,7 +205,7 @@ public class CopyCommand {
                 }
             }
         } catch (IntrospectionException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e.getMessage(), e);
         }
 
         String columnName = null;
@@ -257,7 +255,7 @@ public class CopyCommand {
                                 + helper.getName() + ".class.newInstance();\n");
                         methodBody.append("builder.append(c" + i + ".convert(typed." + method.getName() + "()));\n");
                     } catch (Exception e) {
-                        throw Throwables.propagate(e);
+                        throw new RuntimeException(e.getMessage(), e);
                     }
                 } else if (method.getReturnType().isPrimitive()) {
                     methodBody.append("builder.append(typed." + method.getName() + "());\n");
@@ -333,13 +331,13 @@ public class CopyCommand {
             cc.addMethod(CtNewMethod.make(methodBody.toString(), cc));
         } catch (NotFoundException | CannotCompileException e) {
             logger.error(e.getMessage(), "Compiled body is:\n" + methodBody.toString());
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e.getMessage(), e);
         }
 
         try {
             return (CopyExtractor<E>) cc.toClass().newInstance();
         } catch (InstantiationException | IllegalAccessException | CannotCompileException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 
@@ -358,11 +356,12 @@ public class CopyCommand {
 
 
     private <E extends Serializable> String getEntityName(CopyList<E> copyList) {
-        if (Strings.isNullOrEmpty(copyList.getAlternateTableName())) {
+        String alternateName = copyList.getAlternateTableName();
+        if (alternateName == null || alternateName.trim().length() == 0) {
             return providerAccessSpi.getTableName(copyList.get(0).getClass());
         } else {
             String schemaName = providerAccessSpi.getSchemaName();
-            if (Strings.isNullOrEmpty(schemaName)) {
+            if (schemaName == null || schemaName.trim().length() == 0) {
                 return copyList.getAlternateTableName();
             } else {
                 return schemaName + "." + copyList.getAlternateTableName();

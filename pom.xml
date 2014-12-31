@@ -149,7 +149,6 @@
     </distributionManagement>
 
     <dependencies>
-        <!-- Dependencies needed (to be provided) for connection accessors -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -173,6 +172,12 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${version.hibernate}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>4.1.3.RELEASE</version>
             <scope>provided</scope>
         </dependency>
 
