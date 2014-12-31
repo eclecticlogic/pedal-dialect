@@ -22,7 +22,7 @@ Download the pedal-dialect jar from Maven central:
 ```
 	<groupId>com.eclecticlogic</groupId>
 	<artifactId>pedal-dialect</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 ```
 
 Minimum dependencies that you need to provide in your application:
@@ -99,3 +99,8 @@ Here is the general pattern of usage for the Copy Command:
         copyCommand.insert(entityManager, list);
 
 
+## Release Notes
+
+### 1.0.1
+
+- Added UUIDBasedIdGenerator, a Hibernate id generator based on UUIDs. 
