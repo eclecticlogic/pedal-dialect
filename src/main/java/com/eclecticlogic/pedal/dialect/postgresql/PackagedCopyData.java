@@ -14,25 +14,46 @@
  * limitations under the License.
  * 
  */
-package com.eclecticlogic.pedal.dm;
-
-import javax.persistence.AttributeConverter;
+package com.eclecticlogic.pedal.dialect.postgresql;
 
 /**
  * @author kabram.
  *
  */
-public class StatusConverter implements AttributeConverter<Status, String> {
+public class PackagedCopyData {
 
-    @Override
-    public String convertToDatabaseColumn(Status attribute) {
-        return attribute.getCode();
+    private String copySql;
+    private String body;
+    private int size;
+
+
+    public String getBody() {
+        return body;
     }
 
 
-    @Override
-    public Status convertToEntityAttribute(String dbData) {
-        return Status.forCode(dbData);
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+
+    public String getCopySql() {
+        return copySql;
+    }
+
+
+    public void setCopySql(String copySql) {
+        this.copySql = copySql;
+    }
+
+
+    public int getSize() {
+        return size;
+    }
+
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
 }

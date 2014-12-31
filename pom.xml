@@ -50,12 +50,7 @@
             <version>1.0.0.Final</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.jolbox</groupId>
-            <artifactId>bonecp</artifactId>
-            <version>0.8.0.RELEASE</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -68,7 +63,34 @@
             <version>${version.hibernate}</version>
             <scope>provided</scope>
         </dependency>
-        
+
+        <!-- Connection accessors. One of these must be provided by your application -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jdbc</artifactId>
+            <version>8.0.15</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <version>0.8.0.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP-java6</artifactId>
+            <version>2.2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -94,8 +116,11 @@
             <version>${version.postgresql.jdbc}</version>
             <scope>test</scope>
         </dependency>
+
+
+
     </dependencies>
-    
+
     <properties>
         <version.hibernate>4.3.6.Final</version.hibernate>
         <version.slf4j>1.7.7</version.slf4j>

@@ -1,3 +1,19 @@
+/**
+ * Copyright (c) 2014-2015 Eclectic Logic LLC
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
 package com.eclecticlogic.pedal.dm;
 
 // Generated May 28, 2014 8:44:27 AM by Hibernate Tools 4.3.1
@@ -14,6 +30,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
+import com.eclecticlogic.pedal.dialect.postgresql.CopyAsBitString;
+import com.eclecticlogic.pedal.dialect.postgresql.CopyConverter;
 import com.eclecticlogic.pedal.provider.hibernate.ArrayType;
 import com.eclecticlogic.pedal.provider.hibernate.dialect.PostgresqlArrayPrimitiveName;
 
@@ -31,7 +49,8 @@ public class ExoticTypes implements java.io.Serializable {
     private List<Long> scores;
     private List<Long> gpa;
     private Status status;
-
+    private String custom;
+    
 
     @Id
     @Column(name = "login", unique = true, nullable = false)
@@ -47,6 +66,7 @@ public class ExoticTypes implements java.io.Serializable {
 
     @Column(name = "countries", nullable = false)
     @Type(type = "com.eclecticlogic.pedal.provider.hibernate.dialect.PostgresqlBitStringUserType")
+    @CopyAsBitString
     public List<Boolean> getCountries() {
         return this.countries;
     }
@@ -104,6 +124,19 @@ public class ExoticTypes implements java.io.Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+    
+    
+    @CopyConverter(UppercaseConversionHelper.class)
+    @Column(name = "custom", nullable = false)
+    public String getCustom() {
+        return custom;
+    }
+
+
+    
+    public void setCustom(String custom) {
+        this.custom = custom;
     }
 
 }

@@ -16,23 +16,21 @@
  */
 package com.eclecticlogic.pedal.dm;
 
-import javax.persistence.AttributeConverter;
+import com.eclecticlogic.pedal.dialect.postgresql.ConversionHelper;
+
 
 /**
  * @author kabram.
  *
  */
-public class StatusConverter implements AttributeConverter<Status, String> {
+public class UppercaseConversionHelper implements ConversionHelper {
 
+    /**
+     * @see com.eclecticlogic.pedal.dialect.postgresql.ConversionHelper#convert(java.lang.Object)
+     */
     @Override
-    public String convertToDatabaseColumn(Status attribute) {
-        return attribute.getCode();
-    }
-
-
-    @Override
-    public Status convertToEntityAttribute(String dbData) {
-        return Status.forCode(dbData);
+    public String convert(Object value) {
+        return value.toString().toUpperCase();
     }
 
 }

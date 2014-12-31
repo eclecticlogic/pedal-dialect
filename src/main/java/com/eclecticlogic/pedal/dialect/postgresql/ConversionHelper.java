@@ -14,25 +14,19 @@
  * limitations under the License.
  * 
  */
-package com.eclecticlogic.pedal.dm;
+package com.eclecticlogic.pedal.dialect.postgresql;
 
-import javax.persistence.AttributeConverter;
 
 /**
+ * Interface to be implemented by the converter perform custom conversion for the copy command.
  * @author kabram.
  *
  */
-public class StatusConverter implements AttributeConverter<Status, String> {
+public interface ConversionHelper {
 
-    @Override
-    public String convertToDatabaseColumn(Status attribute) {
-        return attribute.getCode();
-    }
-
-
-    @Override
-    public Status convertToEntityAttribute(String dbData) {
-        return Status.forCode(dbData);
-    }
-
+    /**
+     * @param value The value of the column.
+     * @return String representation of the value.
+     */
+    String convert(Object value);
 }

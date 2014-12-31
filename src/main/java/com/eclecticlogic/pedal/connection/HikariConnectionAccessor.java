@@ -14,25 +14,30 @@
  * limitations under the License.
  * 
  */
-package com.eclecticlogic.pedal.dm;
+package com.eclecticlogic.pedal.connection;
 
-import javax.persistence.AttributeConverter;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import com.zaxxer.hikari.proxy.ConnectionProxy;
 
 /**
+ * For use with HikariCP
  * @author kabram.
  *
  */
-public class StatusConverter implements AttributeConverter<Status, String> {
+public class HikariConnectionAccessor implements ConnectionAccessor {
 
+    /**
+     * @see com.eclecticlogic.pedal.connection.ConnectionAccessor#getRawConnection(java.sql.Connection)
+     */
     @Override
-    public String convertToDatabaseColumn(Status attribute) {
-        return attribute.getCode();
-    }
-
-
-    @Override
-    public Status convertToEntityAttribute(String dbData) {
-        return Status.forCode(dbData);
+    public Connection getRawConnection(Connection providerConnection) {
+        try {
+            return ((ConnectionProxy) providerConnection).unwrap(Connection.class);
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }

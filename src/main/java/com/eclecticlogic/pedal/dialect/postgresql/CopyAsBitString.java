@@ -14,25 +14,25 @@
  * limitations under the License.
  * 
  */
-package com.eclecticlogic.pedal.dm;
+package com.eclecticlogic.pedal.dialect.postgresql;
 
-import javax.persistence.AttributeConverter;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
+ * Use this annotation on a Postgresql BitString mapped to a List<Boolean> using custom-type mapping to enable
+ * CopyCommand support for bulk-inserts.
+ * 
  * @author kabram.
  *
  */
-public class StatusConverter implements AttributeConverter<Status, String> {
-
-    @Override
-    public String convertToDatabaseColumn(Status attribute) {
-        return attribute.getCode();
-    }
-
-
-    @Override
-    public Status convertToEntityAttribute(String dbData) {
-        return Status.forCode(dbData);
-    }
+@Target(value = ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+public @interface CopyAsBitString {
 
 }

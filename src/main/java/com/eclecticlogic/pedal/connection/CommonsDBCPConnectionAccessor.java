@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2015 Eclectic Logic LLC
+ * Copyright (c) 2014-2014 Eclectic Logic LLC
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,25 @@ package com.eclecticlogic.pedal.connection;
 
 import java.sql.Connection;
 
+import org.apache.commons.dbcp2.DelegatingConnection;
+import org.apache.commons.dbcp2.PoolableConnection;
 
 /**
- * Underlying connection = provider connection.
- * 
+ * For use with Apache DBCP 2. Make sure data source is configured with setAccessToUnderlyingConnectionAllowed(true).
  * @author kabram.
  *
  */
-public class IdentityConnectionAccessor implements ConnectionAccessor {
+public class CommonsDBCPConnectionAccessor implements ConnectionAccessor {
 
+    /**
+     * @see com.eclecticlogic.pedal.connection.ConnectionAccessor#getRawConnection(java.sql.Connection)
+     */
+    @SuppressWarnings("unchecked")
     @Override
     public Connection getRawConnection(Connection providerConnection) {
-        return providerConnection;
+        DelegatingConnection<PoolableConnection> conn = (DelegatingConnection<PoolableConnection>) providerConnection;
+        PoolableConnection c = conn.getDelegate();
+        return c.getDelegate();
     }
 
 }

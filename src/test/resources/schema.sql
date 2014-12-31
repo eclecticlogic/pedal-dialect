@@ -9,7 +9,8 @@ CREATE TABLE "exotic_types"(
  "authorizations" Character varying(20)[] NOT NULL,
  "scores" Bigint[] NULL,
  "gpa" Bigint[] NULL,
- "status" Character(2) NOT NULL
+ "status" Character(2) NOT NULL,
+ "custom" varchar NOT NULL
 )
 WITH (OIDS=FALSE)
 ;
