@@ -16,9 +16,7 @@
  */
 package com.eclecticlogic.pedal;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -115,7 +113,7 @@ public class TestPedalDialect {
     @Test
     @Transactional
     public void testCopyCommand() {
-        List<ExoticTypes> list = new ArrayList<>();
+        CopyList<ExoticTypes> list = new CopyList<>();
 
         // The copy-command can insert 100k of these per second.
         for (int i = 0; i < 10; i++) {
@@ -133,7 +131,7 @@ public class TestPedalDialect {
             list.add(et);
         }
 
-        copyCommand.insert(entityManager, new CopyList<>(list));
+        copyCommand.insert(entityManager, list);
         Assert.assertNotNull(entityManager.find(ExoticTypes.class, "copyCommand0"));
         Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getCustom(),
                 "THIS WILL BE MADE UPPERCASE");

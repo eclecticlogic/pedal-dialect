@@ -60,14 +60,8 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
 /**
- * Supported features and limitations in the current implementation:
- * 1. @Column annotation must be present on getters
- * 2. @Column annotation should have column name in it or there should be an @AttributeOverrides/@AttributeOverride class-level annotation with the column name.
- * 3. @Convert annotation should be on getter
- * 4. Array types can only be arrays of primitives. Bit arrays are supported. Annotate with @BitString 
- * 5. No embedded id support in entity or fk in entity.
- * 6. No support for custom types.
- * 7. No specific distinction between Temporal TIMESTAMP and DATE.
+ * Allows collection of JPA entities to be written to the database using the Postgresql COPY command.
+ * 
  * @author kabram.
  *
  */
