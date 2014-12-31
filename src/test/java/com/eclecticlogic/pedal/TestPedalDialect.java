@@ -32,6 +32,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommand;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyList;
 import com.eclecticlogic.pedal.dm.ExoticTypes;
+import com.eclecticlogic.pedal.dm.Planet;
+import com.eclecticlogic.pedal.dm.PlanetId;
 import com.eclecticlogic.pedal.dm.Status;
 import com.eclecticlogic.pedal.dm.Student;
 import com.eclecticlogic.pedal.provider.ProviderAccess;
@@ -138,5 +140,23 @@ public class TestPedalDialect {
         Assert.assertNotNull(entityManager.find(ExoticTypes.class, "copyCommand1"));
         Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getAuthorizations(),
                 Sets.newHashSet("b", "c", "a"));
+    }
+    
+    
+    @Test
+    @Transactional
+    public void testCopyCommandWithEmbeddedId() {
+        CopyList<Planet> list = new CopyList<>();
+        {
+            Planet p = new Planet();
+            PlanetId id = new PlanetId();
+            id.setName("jupiter");
+            id.setPosition(6);
+            p.setId(id);
+            p.setDistance(100);
+            list.add(p);
+        }
+        copyCommand.insert(entityManager, list);
+        Assert.assertNotNull(entityManager.find(Planet.class, new PlanetId("jupiter", 6)));
     }
 }

@@ -72,7 +72,7 @@ The `CopyCommand` implementation in pedal currently has the following restrictio
 2. @Column annotation must have column name in it or there should be an @AttributeOverrides or @AttributeOverride class-level annotation with the column name.
 3. @Convert annotation is only support when applied to the getter.
 4. Array types can only be arrays of primitives. Bit arrays are supported if the entity field data type is List<Boolean>. Apply the @CopyAsBitString annotation to the getter to support writing to the Postgresql bit array.
-5. No embedded id support in entity or foreign key in entity.
+5. Embedded id support if `@EmbeddedId` annotation is present and `@AttributeOverrides` annotation denotes pk columns. See Planet class in the test.
 6. No specific distinction between Temporal TIMESTAMP and DATE.
 
 The `CopyCommand` does support a generic mechanism to support custom-types or work-around the above limitations using a `ConversionHelper`. For any field where you want to define custom conversion, apply the `@CopyConverter` annotation with a reference to an implementation of a suitable `ConversionHelper`.

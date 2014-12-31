@@ -30,3 +30,14 @@ WITH (OIDS=FALSE)
 
 ALTER TABLE "graduate_student" ADD CONSTRAINT "Key2" PRIMARY KEY ("id")
 ;
+
+CREATE TABLE "planet" (
+    "name" varchar not null,
+    "position" integer not null,
+    "distance" integer not null
+) WITH (OIDS = FALSE)
+;
+    
+
+ALTER TABLE "planet" ADD CONSTRAINT "Key4" PRIMARY KEY ("name", "position")
+;
