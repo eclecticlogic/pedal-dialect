@@ -101,6 +101,10 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.0.2
+
+- ConversionHelper has been generified. See [`ExoticTypes`](https://raw.githubusercontent.com/eclecticlogic/pedal-dialect/master/src/test/java/com/eclecticlogic/pedal/dm/ExoticTypes.java) class in src/test/java of the source distribution for an example.
+
 ### 1.0.1
 
 - Added UUIDBasedIdGenerator, a Hibernate id generator based on UUIDs. 

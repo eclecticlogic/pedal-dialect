@@ -37,5 +37,5 @@ public @interface CopyConverter {
     /**
      * @return Conversion class reference.
      */
-    Class<? extends ConversionHelper> value();
+    Class<? extends ConversionHelper<?>> value();
 }

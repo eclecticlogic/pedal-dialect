@@ -23,14 +23,14 @@ import com.eclecticlogic.pedal.dialect.postgresql.ConversionHelper;
  * @author kabram.
  *
  */
-public class UppercaseConversionHelper implements ConversionHelper {
+public class UppercaseConversionHelper implements ConversionHelper<String> {
 
     /**
      * @see com.eclecticlogic.pedal.dialect.postgresql.ConversionHelper#convert(java.lang.Object)
      */
     @Override
-    public String convert(Object value) {
-        return value.toString().toUpperCase();
+    public String convert(String value) {
+        return value.toUpperCase();
     }
 
 }

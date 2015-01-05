@@ -22,11 +22,11 @@ package com.eclecticlogic.pedal.dialect.postgresql;
  * @author kabram.
  *
  */
-public interface ConversionHelper {
+public interface ConversionHelper<T> {
 
     /**
      * @param value The value of the column.
      * @return String representation of the value.
      */
-    String convert(Object value);
+    String convert(T value);
 }
