@@ -22,7 +22,7 @@ Download the pedal-dialect jar from Maven central:
 ```
 	<groupId>com.eclecticlogic</groupId>
 	<artifactId>pedal-dialect</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.3</version>
 ```
 
 Minimum dependencies that you need to provide in your application:
