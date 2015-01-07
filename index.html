@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Pedal-dialect by eclecticlogic</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Pedal-dialect</h1>
+          <h2>Dialect (database) and provider (e.g. Hibernate) specific supporting implementations for Pedal and related frameworks.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/eclecticlogic/pedal-dialect/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/eclecticlogic/pedal-dialect/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/eclecticlogic/pedal-dialect" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="pedal-dialect" class="anchor" href="#pedal-dialect" aria-hidden="true"><span class="octicon octicon-link"></span></a>pedal-dialect</h1>
+
+<p>Pedal-dialect, a member of the Pedal family (<a href="https://github.com/eclecticlogic/pedal-tx">pedal-tx</a>, <a href="https://github.com/eclecticlogic/pedal-loader">pedal-loader</a>), is a collection of dialect (database) and provider (e.g. Hibernate) specific implementations for use with JPA. It enables non-standard SQL data types (arrays, sets, bit-sets) and dialect specific features such as support for the Postgresql Copy command.</p>
+
+<h2>
+<a id="feature-highlights" class="anchor" href="#feature-highlights" aria-hidden="true"><span class="octicon octicon-link"></span></a>Feature Highlights</h2>
+
+<ul>
+<li>Provider support (for Hibernate)
+
+<ul>
+<li>Access current schema name</li>
+<li>Get table name for given entity (including when remapped by orm.xml)</li>
+<li>Hibernate user-type (mutable and non-mutable) base classes.</li>
+<li>List and Set user-types.</li>
+</ul>
+</li>
+<li>Postgresql specific features
+
+<ul>
+<li>Adaptation of List/Set type for Hibernate</li>
+<li>Hibernate user-type for Postgres bit arra</li>
+<li>Support for using the COPY command directly with JPA entity classes.</li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h2>
+
+<p>Download the pedal-dialect jar from Maven central:</p>
+
+<pre><code>    &lt;groupId&gt;com.eclecticlogic&lt;/groupId&gt;
+    &lt;artifactId&gt;pedal-dialect&lt;/artifactId&gt;
+    &lt;version&gt;1.0.3&lt;/version&gt;
+</code></pre>
+
+<p>Minimum dependencies that you need to provide in your application:</p>
+
+<ol>
+<li>slf4j (over logback or log4j) v1.7.7 or higher</li>
+<li>Spring-boot jpa 1.2 or</li>
+<li>spring-tx, spring-context and spring-orm v4.0 or higher</li>
+<li>hibernate-core and hibernate-entitymanager 4.3 or higher.</li>
+<li>JDBC4 compliant driver and connection pool manager (BoneCP, HikariCP, Apache Commons DBCP2 and Tomcat JDBC are supported).</li>
+</ol>
+
+<h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
+
+<p>To enable the <code>ProviderAccess</code> interface, create an instance of <code>HibernateProviderAccessSpiImpl</code> and give it a reference to the <code>EntityManagerFactory</code>. Here is the java code to use in a Spring configuration class:</p>
+
+<pre><code>@Bean
+HibernateProviderAccessSpiImpl hibernateProvider(EntityManagerFactory factory) {
+    HibernateProviderAccessSpiImpl impl = new HibernateProviderAccessSpiImpl();
+    impl.setEntityManagerFactory(factory);
+    return impl;
+}
+</code></pre>
+
+<p>To enable the <code>CopyCommand</code> create an instance of it and set the ProviderAccess and an instance of a <code>ConnectionAccessor</code>. For e.g., to use it with Tomcat, the following Bean creator method can be used:</p>
+
+<pre><code>@Bean
+public CopyCommand copyCommand(ProviderAccessSpi provider) {
+    CopyCommand command = new CopyCommand();
+    command.setProviderAccessSpi(provider);
+    command.setConnectionAccessor(new TomcatJdbcConnectionAccessor());
+    return command;
+}
+</code></pre>
+
+<h2>
+<a id="posgresql-user-types" class="anchor" href="#posgresql-user-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Posgresql User Types</h2>
+
+<p>Pedal provides support (via Hibernate user-types) for a number of non-standard Postgresql data types that can really help streamline your data model. Among these are array types and bits.</p>
+
+<p>Pedal supports <code>List</code> and <code>Set</code> types for <code>String</code>, <code>Integer</code>, <code>Long</code>, <code>Date</code>, <code>Boolean</code> and <code>BigDecimal</code> (i.e., collections of standard sql-types). To use <code>List</code> and <code>Set</code> data types, simply annotate your JPA/Hibernate entity as shown.</p>
+
+<pre><code>
+    @Column(name = "authorizations", nullable = false)
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.SetType", parameters = @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.STRING))
+    public Set&lt;String&gt; getAuthorizations() {
+        return this.authorizations;
+    }
+
+
+    @Column(name = "scores")
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.ListType", parameters = { @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.LONG) })
+    public List&lt;Long&gt; getScores() {
+        return this.scores;
+    }
+
+</code></pre>
+
+<p>Pedal allows you to control how empty collections are treated - by default they are written as null values in the database, but you can change that:</p>
+
+<pre><code>
+    @Column(name = "gpa")
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.ListType", parameters = {
+            @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.LONG),
+            @Parameter(name = ArrayType.EMPTY_IS_NULL, value = "false") })
+    public List&lt;Long&gt; getGpa() {
+        return gpa;
+    }
+
+
+</code></pre>
+
+<p>Pedal also allow mapping of Postgresql bit array to <code>java.util.BitSet</code>. </p>
+
+<pre><code>
+    @Column(name = "countries", nullable = false, length = 7)
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.dialect.PostgresqlBitStringUserType", parameters = @Parameter(name = PostgresqlBitStringUserType.BIT_LENGTH, value = "7"))
+    public BitSet getCountries() {
+        return this.countries;
+    }
+
+
+</code></pre>
+
+<p>Note: The BIT_LENGTH parameter is required because Hibernate User-Types cannot access the JPA annotation.</p>
+
+<h2>
+<a id="copy-command-features" class="anchor" href="#copy-command-features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Copy Command features</h2>
+
+<p>The Postgresql <a href="http://www.postgresql.org/docs/9.1/static/sql-copy.html">Copy</a> command provides a very high performance insert capability. One can easily achieve 100k inserts per second using it. For background and features that are bypassed by the copy command refer to the official <a href="http://www.postgresql.org/docs/9.1/static/sql-copy.html">documentation</a>.</p>
+
+<p>The copy command works in text or binary mode. Our tests show that the binary mode produces a larger data stream and therefore actually results in slower performance over the network. The text mode requires data to be encoded into delimited columns and rows. Such a format has a high-impedance mismatch with the typical manner in which objects are handled in an ORM. The Copy command feature of pedal overcomes this mismatch by allowing a collection of JPA entities written to the database. The pedal framework does the work of assembling the text encoding of the data in the JPA entities and it does so by creating a Javassist based custom class to optimize on performance.</p>
+
+<p>The <code>CopyCommand</code> implementation in pedal currently has the following restrictions/limitations:</p>
+
+<ol>
+<li>
+<code>@Column</code> annotation must be present and is only supported on getter methods.</li>
+<li>
+<code>@Column</code> annotation must have column name in it or there should be an <code>@AttributeOverrides</code> or <code>@AttributeOverride</code> class-level annotation with the column name.</li>
+<li>
+<code>@Convert</code> annotation is only support when applied to the getter.</li>
+<li>Array types can only be arrays of primitives. Postgresql <code>bit</code> arrays are supported if the entity field data type is <code>java.util.BitSet</code>. Apply the <code>@CopyAsBitString</code> annotation to the getter to support writing to the Postgresql bit array. The <code>@Column</code> annotation must have the length set to the bit array length in Postgresql.</li>
+<li>Embedded id support if <code>@EmbeddedId</code> annotation is present and <code>@AttributeOverrides</code> annotation denotes pk columns. See <code>Planet</code> class in the test.</li>
+<li>No specific distinction between Temporal <code>TIMESTAMP</code> and <code>DATE</code>.</li>
+</ol>
+
+<p>The <code>CopyCommand</code> does support a generic mechanism to support custom-types or work-around the above limitations using a <code>ConversionHelper</code>. For any field where you want to define custom conversion, apply the <code>@CopyConverter</code> annotation with a reference to an implementation of a suitable <code>ConversionHelper</code>.</p>
+
+<p>Here is the general pattern of usage for the Copy Command:</p>
+
+<pre><code>    @PersistenceContext
+    private EntityManager entityManager;
+
+    ...        
+
+
+    CopyList&lt;ExoticTypes&gt; list = new CopyList&lt;&gt;();
+
+    // The copy-command can insert 100k of these per second.
+    for (int i = 0; i &lt; 10; i++) {
+        MyEntity entity = new MyEntity();
+        entity.setSomeField("value");
+        entity.setSomeOtherField("value 2");
+        list.add(et);
+    }
+
+    copyCommand.insert(entityManager, list);
+</code></pre>
+
+<h2>
+<a id="release-notes" class="anchor" href="#release-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Release Notes</h2>
+
+<h3>
+<a id="103" class="anchor" href="#103" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.3</h3>
+
+<ul>
+<li>
+<code>PostgresqlBitStringUserType</code> converts to BitSet instead of List.</li>
+</ul>
+
+<h3>
+<a id="102" class="anchor" href="#102" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.2</h3>
+
+<ul>
+<li>ConversionHelper has been generified. See <a href="https://raw.githubusercontent.com/eclecticlogic/pedal-dialect/master/src/test/java/com/eclecticlogic/pedal/dm/ExoticTypes.java"><code>ExoticTypes</code></a> class in src/test/java of the source distribution for an example.</li>
+</ul>
+
+<h3>
+<a id="101" class="anchor" href="#101" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.1</h3>
+
+<ul>
+<li>Added UUIDBasedIdGenerator, a Hibernate id generator based on UUIDs. </li>
+</ul>
+        </section>
+
+        <footer>
+          Pedal-dialect is maintained by <a href="https://github.com/eclecticlogic">eclecticlogic</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
