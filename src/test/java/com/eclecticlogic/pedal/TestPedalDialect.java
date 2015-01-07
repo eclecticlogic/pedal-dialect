@@ -16,6 +16,7 @@
  */
 package com.eclecticlogic.pedal;
 
+import java.util.BitSet;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
@@ -72,7 +73,12 @@ public class TestPedalDialect {
     public void insertTestForCustomTypes() {
         ExoticTypes et = new ExoticTypes();
         et.setLogin("inserter");
-        et.setCountries(Lists.newArrayList(false, false, true, false, false, false, true));
+        BitSet bs = new BitSet(7);
+        bs.set(1);
+        bs.set(3);
+        bs.set(4);
+        
+        et.setCountries(bs);
         et.setAuthorizations(Sets.newHashSet("a", "b", "b", "c"));
         et.setScores(Lists.newArrayList(1L, 2L, 3L));
         et.setGpa(Lists.<Long> newArrayList());
@@ -80,12 +86,13 @@ public class TestPedalDialect {
         et.setCustom("abc");
 
         entityManager.persist(et);
+        entityManager.flush();
 
         ExoticTypes loaded = entityManager.find(ExoticTypes.class, "inserter");
         Assert.assertNotNull(loaded);
         Assert.assertEquals(loaded.getLogin(), "inserter");
         Assert.assertEquals(loaded.getAuthorizations(), Sets.newHashSet("b", "a", "c"));
-        Assert.assertEquals(loaded.getCountries(), Lists.newArrayList(false, false, true, false, false, false, true));
+        Assert.assertEquals(loaded.getCountries().toString(), "{1, 3, 4}");
         Assert.assertEquals(loaded.getGpa(), Lists.newArrayList());
         Assert.assertEquals(loaded.getScores(), Lists.newArrayList(1L, 2L, 3L));
         Assert.assertEquals(loaded.getStatus(), Status.ACTIVE);
@@ -121,7 +128,11 @@ public class TestPedalDialect {
         for (int i = 0; i < 10; i++) {
             ExoticTypes et = new ExoticTypes();
             et.setLogin("copyCommand" + i);
-            et.setCountries(Lists.newArrayList(false, false, true, false, false, false, true));
+            BitSet bs = new BitSet(7);
+            bs.set(1);
+            bs.set(3);
+            bs.set(4);
+            et.setCountries(bs);
             et.setAuthorizations(Sets.newHashSet("a", "b", "b", "c"));
             if (i != 9) {
                 et.setScores(Lists.newArrayList(1L, 2L, 3L));

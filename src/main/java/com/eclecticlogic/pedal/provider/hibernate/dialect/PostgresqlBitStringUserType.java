@@ -20,10 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.BitSet;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -31,11 +28,25 @@ import org.hibernate.engine.spi.SessionImplementor;
 import com.eclecticlogic.pedal.provider.hibernate.AbstractMutableUserType;
 
 /**
+ * Maps a Postgresql bit-string to a java BitSet.
  * @author kabram.
  *
  */
 public class PostgresqlBitStringUserType extends AbstractMutableUserType {
 
+    public static final String BIT_LENGTH = "bitLength";
+    
+    
+    public int getNumberOfBits() {
+        try {
+            return Integer.parseInt(getParameters().getProperty(BIT_LENGTH));   
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("You must provide a valid number for the number of bits "
+                    + "using @Parameter");
+        }
+    }
+    
+    
     @Override
     public int[] sqlTypes() {
         return new int[] { Types.BIT };
@@ -45,7 +56,7 @@ public class PostgresqlBitStringUserType extends AbstractMutableUserType {
     @SuppressWarnings("rawtypes")
     @Override
     public Class returnedClass() {
-        return List.class;
+        return BitSet.class;
     }
 
 
@@ -55,26 +66,26 @@ public class PostgresqlBitStringUserType extends AbstractMutableUserType {
         byte[] bytes = rs.getBytes(names[0]);
 
         if (rs.wasNull()) {
-            return Collections.EMPTY_LIST;
+            return null;
         } else {
-            List<Boolean> list = new ArrayList<>();
+            BitSet bits = new BitSet(bytes.length);
+            int index = 0;
             for (byte b : bytes) {
                 // 1 and 0 are encoded as ascii values of '1' and '0'
-                list.add(b - '0' != 0);
+                bits.set(index++, b - '0' != 0);
             }
-            return list;
+            return bits;
         }
     }
 
 
-    @SuppressWarnings("unchecked")
     @Override
     public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
             throws HibernateException, SQLException {
-        List<Boolean> list = (List<Boolean>) value;
+        BitSet bits = (BitSet)value;
         StringBuilder builder = new StringBuilder();
-        for (Boolean b : list) {
-            builder.append(b ? '1' : '0');
+        for (int i = 0; i < getNumberOfBits(); i++) {
+            builder.append(bits.get(i) ? '1' : '0');
         }
         statement.setObject(index, builder.toString(), Types.OTHER);
     }
@@ -83,9 +94,9 @@ public class PostgresqlBitStringUserType extends AbstractMutableUserType {
     @Override
     public Object deepCopy(Object value) throws HibernateException {
         if (value == null) {
-            return new ArrayList<>();
+            return null;
         } else {
-            return new ArrayList<>((Collection<?>) value);
+            return ((BitSet)value).clone();
         }
     }
 

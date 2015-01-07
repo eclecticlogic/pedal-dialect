@@ -284,11 +284,12 @@ public class CopyCommand {
                         methodBody.append("else {\n");
 
                         if (method.isAnnotationPresent(CopyAsBitString.class)) {
-                            methodBody.append("java.util.Iterator it" + i + " = typed." + method.getName()
-                                    + "().iterator();\n");
-                            methodBody.append("while (it" + i + ".hasNext()) {\n");
-                            methodBody.append("Boolean b = (Boolean)it" + i + ".next();\n");
-                            methodBody.append("builder.append(b.booleanValue() ? \"0\" : \"1\");\n");
+                            // Get number of bits from @Column annotation.
+                            int bitCount = method.getAnnotation(Column.class).length();
+                            methodBody.append("java.util.BitSet bs" + i + " = typed." + method.getName()
+                                    + "();\n");
+                            methodBody.append("for (int i = 0; i < " + bitCount + "; i++) {\n");
+                            methodBody.append("builder.append(bs" + i + ".get(i) ? \"0\" : \"1\");\n");
                             methodBody.append("}\n");
                         } else if (Collection.class.isAssignableFrom(method.getReturnType())
                                 && method.isAnnotationPresent(Convert.class) == false) {

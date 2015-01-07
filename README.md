@@ -1,7 +1,7 @@
 pedal-dialect
 =============
 
-Pedal-dialect is a collection of dialect (database) and provider (e.g. Hibernate) specific implementations for use with JPA. It enables non-standard SQL data types (arrays, sets, bit-sets) and dialect specific features such as support for the Postgresql Copy command.
+Pedal-dialect, a member of the Pedal family ([pedal-tx](https://github.com/eclecticlogic/pedal-tx), [pedal-loader](https://github.com/eclecticlogic/pedal-loader)), is a collection of dialect (database) and provider (e.g. Hibernate) specific implementations for use with JPA. It enables non-standard SQL data types (arrays, sets, bit-sets) and dialect specific features such as support for the Postgresql Copy command.
 
 ## Feature Highlights
 
@@ -59,6 +59,58 @@ To enable the `CopyCommand` create an instance of it and set the ProviderAccess 
         return command;
     }
 
+## Posgresql User Types
+
+Pedal provides support (via Hibernate user-types) for a number of non-standard Postgresql data types that can really help streamline your data model. Among these are array types and bits.
+
+Pedal supports `List` and `Set` types for `String`, `Integer`, `Long`, `Date`, `Boolean` and `BigDecimal` (i.e., collections of standard sql-types). To use `List` and `Set` data types, simply annotate your JPA/Hibernate entity as shown.
+
+```
+
+    @Column(name = "authorizations", nullable = false)
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.SetType", parameters = @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.STRING))
+    public Set<String> getAuthorizations() {
+        return this.authorizations;
+    }
+
+
+    @Column(name = "scores")
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.ListType", parameters = { @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.LONG) })
+    public List<Long> getScores() {
+        return this.scores;
+    }
+
+```
+
+Pedal allows you to control how empty collections are treated - by default they are written as null values in the database, but you can change that:
+
+```
+
+    @Column(name = "gpa")
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.ListType", parameters = {
+            @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.LONG),
+            @Parameter(name = ArrayType.EMPTY_IS_NULL, value = "false") })
+    public List<Long> getGpa() {
+        return gpa;
+    }
+
+
+```
+
+Pedal also allow mapping of Postgresql bit array to `java.util.BitSet`. 
+
+```
+
+    @Column(name = "countries", nullable = false, length = 7)
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.dialect.PostgresqlBitStringUserType", parameters = @Parameter(name = PostgresqlBitStringUserType.BIT_LENGTH, value = "7"))
+    public BitSet getCountries() {
+        return this.countries;
+    }
+
+
+```
+
+Note: The BIT_LENGTH parameter is required because Hibernate User-Types cannot access the JPA annotation.
 
 ## Copy Command features
 
@@ -68,12 +120,12 @@ The copy command works in text or binary mode. Our tests show that the binary mo
 
 The `CopyCommand` implementation in pedal currently has the following restrictions/limitations:
 
-1. @Column annotation must be present and is only supported on getter methods.
-2. @Column annotation must have column name in it or there should be an @AttributeOverrides or @AttributeOverride class-level annotation with the column name.
-3. @Convert annotation is only support when applied to the getter.
-4. Array types can only be arrays of primitives. Bit arrays are supported if the entity field data type is List<Boolean>. Apply the @CopyAsBitString annotation to the getter to support writing to the Postgresql bit array.
-5. Embedded id support if `@EmbeddedId` annotation is present and `@AttributeOverrides` annotation denotes pk columns. See Planet class in the test.
-6. No specific distinction between Temporal TIMESTAMP and DATE.
+1. `@Column` annotation must be present and is only supported on getter methods.
+2. `@Column` annotation must have column name in it or there should be an `@AttributeOverrides` or `@AttributeOverride` class-level annotation with the column name.
+3. `@Convert` annotation is only support when applied to the getter.
+4. Array types can only be arrays of primitives. Postgresql `bit` arrays are supported if the entity field data type is `java.util.BitSet`. Apply the `@CopyAsBitString` annotation to the getter to support writing to the Postgresql bit array. The `@Column` annotation must have the length set to the bit array length in Postgresql.
+5. Embedded id support if `@EmbeddedId` annotation is present and `@AttributeOverrides` annotation denotes pk columns. See `Planet` class in the test.
+6. No specific distinction between Temporal `TIMESTAMP` and `DATE`.
 
 The `CopyCommand` does support a generic mechanism to support custom-types or work-around the above limitations using a `ConversionHelper`. For any field where you want to define custom conversion, apply the `@CopyConverter` annotation with a reference to an implementation of a suitable `ConversionHelper`.
 
@@ -100,6 +152,10 @@ Here is the general pattern of usage for the Copy Command:
 
 
 ## Release Notes
+
+### 1.0.3
+
+- `PostgresqlBitStringUserType` converts to BitSet instead of List<Boolean>.
 
 ### 1.0.2
 
