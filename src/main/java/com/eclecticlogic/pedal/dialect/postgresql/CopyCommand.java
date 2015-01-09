@@ -58,6 +58,9 @@ import com.eclecticlogic.pedal.provider.Consumer;
 import com.eclecticlogic.pedal.provider.ProviderAccessSpi;
 
 /**
+ * WARNING: This class is in desparate need of refactoring. I envision creating a java-source code generator or using 
+ * StringTemplate to clean this up. In the meantime, please accept my sincerest apologies :) 
+ * 
  * Allows collection of JPA entities to be written to the database using the Postgresql COPY command.
  * 
  * @author kabram.

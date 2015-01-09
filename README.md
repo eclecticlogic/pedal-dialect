@@ -118,7 +118,7 @@ The Postgresql [Copy](http://www.postgresql.org/docs/9.1/static/sql-copy.html) c
 
 The copy command works in text or binary mode. Our tests show that the binary mode produces a larger data stream and therefore actually results in slower performance over the network. The text mode requires data to be encoded into delimited columns and rows. Such a format has a high-impedance mismatch with the typical manner in which objects are handled in an ORM. The Copy command feature of pedal overcomes this mismatch by allowing a collection of JPA entities written to the database. The pedal framework does the work of assembling the text encoding of the data in the JPA entities and it does so by creating a Javassist based custom class to optimize on performance.
 
-The `CopyCommand` implementation in pedal currently has the following restrictions/limitations:
+[The](#CopyCommandSupportedFeatures) `CopyCommand` implementation in pedal currently has the following restrictions/limitations:
 
 1. `@Column` annotation must be present and is only supported on getter methods.
 2. `@Column` annotation must have column name in it or there should be an `@AttributeOverrides` or `@AttributeOverride` class-level annotation with the column name.
