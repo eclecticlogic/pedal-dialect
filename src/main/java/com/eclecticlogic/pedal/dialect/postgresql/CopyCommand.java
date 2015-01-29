@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javassist.CannotCompileException;
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtNewMethod;
@@ -40,6 +41,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
@@ -152,6 +154,7 @@ public class CopyCommand {
     }
 
 
+    @SuppressWarnings("unchecked")
     private void setupFor(Class<? extends Serializable> clz) {
         if (fieldNamesByClass.get(clz) == null) {
             List<String> fields = new ArrayList<>();
@@ -175,7 +178,24 @@ public class CopyCommand {
                         }
                     }
                     methods.add(method);
-                }
+                } else if (method.getReturnType().isAnnotationPresent(Embeddable.class)) {
+                    methods.add(method);
+                    // Embeddables can have column names remapped using attribute overrides.
+                    // We expect all attributes to be overridden. 
+                    if (method.isAnnotationPresent(AttributeOverrides.class)) {
+                        AttributeOverrides overrides = method.getAnnotation(AttributeOverrides.class);
+                        for (AttributeOverride overrideAnnotation : overrides.value()) {
+                            fields.add(overrideAnnotation.column().name());
+                        }
+                    } else {
+                        // Use the column names from the embeddable class. Assumption: @Column annotation exists.
+                        for (Method embedded : method.getReturnType().getMethods()) {
+                            if (embedded.isAnnotationPresent(Column.class)) {
+                                fields.add(extractColumnName(embedded, (Class<? extends Serializable>) method.getReturnType()));
+                            }
+                        }
+                    }
+                } 
                 if (columnName != null) {
                     // Certain one-to-on join situations can lead to multiple columns with the same column-name.
                     if (!fields.contains(columnName)) {
@@ -238,6 +258,7 @@ public class CopyCommand {
     @SuppressWarnings({ "unchecked" })
     private <E extends Serializable> CopyExtractor<E> getExtractor(Class<E> clz, List<Method> fieldMethods) {
         ClassPool pool = ClassPool.getDefault();
+        pool.insertClassPath(new ClassClassPath(clz));
         CtClass cc = pool.makeClass("com.eclecticlogic.pedal.dialect.postgresql." + clz.getSimpleName()
                 + "$CopyExtractor_" + extractorNameSuffix.incrementAndGet());
 
@@ -282,6 +303,48 @@ public class CopyCommand {
                                 }
                             }
                         }
+                    } else if (method.getReturnType().isAnnotationPresent(Embeddable.class)) {
+                        // Embeddable. If attribute overrides is present, we get the columns in the order of the 
+                        // override annotations. Otherwise use method names.
+                        if (method.isAnnotationPresent(AttributeOverrides.class)) {
+                            AttributeOverrides overrides = method.getAnnotation(AttributeOverrides.class);
+                            for (int j = 0; j < overrides.value().length; j++) {
+                                AttributeOverride override = overrides.value()[j];
+                                Method embedded = BeanUtils.getPropertyDescriptor(method.getReturnType(), override.name()).getReadMethod();
+                                if (embedded.getReturnType().isPrimitive()) {
+                                    methodBody.append("builder.append(v" + i + "." + embedded.getName() + "());");
+                                } else {
+                                    methodBody.append("if (v" + i + "." + embedded.getName() + "() == null) {builder.append(\"\\\\N\");}");
+                                    methodBody.append("else {builder.append(v" + i + "." + embedded.getName() + "());}");
+                                }
+                                if (j != overrides.value().length - 1) {
+                                    methodBody.append("builder.append(\"\\t\");\n");
+                                }
+                            } // end loop over override values.
+                        } else {
+                            // Get columns as discovered by method traversal. Its assumed that @Column annotation exists
+                            // on getter methods of interest.
+                            List<Method> embeddedColumnMethods = new ArrayList<>();
+                            for (Method embedded : method.getReturnType().getMethods()) {
+                                if (embedded.isAnnotationPresent(Column.class)) {
+                                    embeddedColumnMethods.add(embedded);   
+                                }
+                            }   
+                            
+                            for (int j = 0; j < embeddedColumnMethods.size(); j++) {
+                                Method embedded  = embeddedColumnMethods.get(j);
+                                if (embedded.getReturnType().isPrimitive()) {
+                                    methodBody.append("builder.append(v" + i + "." + embedded.getName() + "());");
+                                } else {
+                                    methodBody.append("if (v" + i + "." + embedded.getName() + "() == null) {builder.append(\"\\\\N\");}");
+                                    methodBody.append("else {builder.append(v" + i + "." + embedded.getName() + "());}");
+                                }
+                                if (j != embeddedColumnMethods.size() - 1) {
+                                    methodBody.append("builder.append(\"\\t\");\n");
+                                }
+                            } // end loop over override values.
+                            
+                        }
                     } else {
                         methodBody.append("if (v" + i + " == null) {builder.append(\"\\\\N\");}\n");
                         methodBody.append("else {\n");
@@ -289,8 +352,7 @@ public class CopyCommand {
                         if (method.isAnnotationPresent(CopyAsBitString.class)) {
                             // Get number of bits from @Column annotation.
                             int bitCount = method.getAnnotation(Column.class).length();
-                            methodBody.append("java.util.BitSet bs" + i + " = typed." + method.getName()
-                                    + "();\n");
+                            methodBody.append("java.util.BitSet bs" + i + " = typed." + method.getName() + "();\n");
                             methodBody.append("for (int i = 0; i < " + bitCount + "; i++) {\n");
                             methodBody.append("builder.append(bs" + i + ".get(i) ? \"0\" : \"1\");\n");
                             methodBody.append("}\n");

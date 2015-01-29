@@ -41,3 +41,28 @@ CREATE TABLE "planet" (
 
 ALTER TABLE "planet" ADD CONSTRAINT "Key4" PRIMARY KEY ("name", "position")
 ;
+
+CREATE TABLE "embed_simple" (
+    "owner" varchar not null,
+    "state" varchar,
+    "make" varchar not null,
+    "model" varchar,
+    "year" integer not null
+) WITH (OIDS = FALSE)
+;
+
+ALTER TABLE "embed_simple" ADD CONSTRAINT "Key5" PRIMARY KEY ("owner")
+;
+
+
+CREATE TABLE "embed_override" (
+    "owner" varchar not null,
+    "state" varchar,
+    "my_make" varchar not null,
+    "my_model" varchar,
+    "my_year" integer not null
+) WITH (OIDS = FALSE)
+;
+
+ALTER TABLE "embed_override" ADD CONSTRAINT "Key6" PRIMARY KEY ("owner")
+;

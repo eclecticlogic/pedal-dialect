@@ -22,7 +22,7 @@ Download the pedal-dialect jar from Maven central:
 ```
 	<groupId>com.eclecticlogic</groupId>
 	<artifactId>pedal-dialect</artifactId>
-	<version>1.0.3</version>
+	<version>1.1.0</version>
 ```
 
 Minimum dependencies that you need to provide in your application:
@@ -152,6 +152,11 @@ Here is the general pattern of usage for the Copy Command:
 
 
 ## Release Notes
+
+## 1.1.0
+
+- CopyCommand's use of Javassist is now tolerant of Spring's "compound jar" or bootable jar format.
+- CopyCommand now supports property of type that is annotated with `@Embeddable`. The embedded type with one or more columns should have all db-mapped fields annotated with `@Column`. One can override the column names with the @AttributeOverrides annotation against the getter of the embedded type. However, if using @AttributeOverrides, every column should be overridden, even if the name remains the same.
 
 ### 1.0.3
 

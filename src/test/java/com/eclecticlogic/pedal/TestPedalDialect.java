@@ -32,11 +32,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommand;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyList;
+import com.eclecticlogic.pedal.dm.EmbedOverride;
+import com.eclecticlogic.pedal.dm.EmbedSimple;
 import com.eclecticlogic.pedal.dm.ExoticTypes;
 import com.eclecticlogic.pedal.dm.Planet;
 import com.eclecticlogic.pedal.dm.PlanetId;
 import com.eclecticlogic.pedal.dm.Status;
 import com.eclecticlogic.pedal.dm.Student;
+import com.eclecticlogic.pedal.dm.VehicleIdentifier;
 import com.eclecticlogic.pedal.provider.ProviderAccess;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -77,7 +80,7 @@ public class TestPedalDialect {
         bs.set(1);
         bs.set(3);
         bs.set(4);
-        
+
         et.setCountries(bs);
         et.setAuthorizations(Sets.newHashSet("a", "b", "b", "c"));
         et.setScores(Lists.newArrayList(1L, 2L, 3L));
@@ -152,8 +155,8 @@ public class TestPedalDialect {
         Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getAuthorizations(),
                 Sets.newHashSet("b", "c", "a"));
     }
-    
-    
+
+
     @Test
     @Transactional
     public void testCopyCommandWithEmbeddedId() {
@@ -169,5 +172,39 @@ public class TestPedalDialect {
         }
         copyCommand.insert(entityManager, list);
         Assert.assertNotNull(entityManager.find(Planet.class, new PlanetId("jupiter", 6)));
+    }
+
+
+    @Test
+    @Transactional
+    public void testCopyCommandEmbedSimple() {
+        CopyList<EmbedSimple> list = new CopyList<>();
+        EmbedSimple simple = new EmbedSimple();
+        simple.setOwner("joe");
+        VehicleIdentifier vi = new VehicleIdentifier();
+        vi.setMake("Toyota");
+        vi.setModel("corolla");
+        vi.setYear(1990);
+        simple.setIdentifier(vi);
+        list.add(simple);
+        copyCommand.insert(entityManager, list);
+        Assert.assertNotNull(entityManager.find(EmbedSimple.class, "joe"));
+    }
+    
+    
+    @Test
+    @Transactional
+    public void testCopyCommandEmbedOverride() {
+        CopyList<EmbedOverride> list = new CopyList<>();
+        EmbedOverride embed = new EmbedOverride();
+        embed.setOwner("joe");
+        VehicleIdentifier vi = new VehicleIdentifier();
+        vi.setMake("Toyota");
+        vi.setModel("corolla");
+        vi.setYear(1990);
+        embed.setIdentifier(vi);
+        list.add(embed);
+        copyCommand.insert(entityManager, list);
+        Assert.assertNotNull(entityManager.find(EmbedOverride.class, "joe"));
     }
 }
