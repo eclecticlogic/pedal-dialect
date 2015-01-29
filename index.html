@@ -66,7 +66,7 @@
 
 <pre><code>    &lt;groupId&gt;com.eclecticlogic&lt;/groupId&gt;
     &lt;artifactId&gt;pedal-dialect&lt;/artifactId&gt;
-    &lt;version&gt;1.0.3&lt;/version&gt;
+    &lt;version&gt;1.1.0&lt;/version&gt;
 </code></pre>
 
 <p>Minimum dependencies that you need to provide in your application:</p>
@@ -161,7 +161,7 @@ public CopyCommand copyCommand(ProviderAccessSpi provider) {
 
 <p>The copy command works in text or binary mode. Our tests show that the binary mode produces a larger data stream and therefore actually results in slower performance over the network. The text mode requires data to be encoded into delimited columns and rows. Such a format has a high-impedance mismatch with the typical manner in which objects are handled in an ORM. The Copy command feature of pedal overcomes this mismatch by allowing a collection of JPA entities written to the database. The pedal framework does the work of assembling the text encoding of the data in the JPA entities and it does so by creating a Javassist based custom class to optimize on performance.</p>
 
-<p>The <code>CopyCommand</code> implementation in pedal currently has the following restrictions/limitations:</p>
+<p><a href="#CopyCommandSupportedFeatures">The</a> <code>CopyCommand</code> implementation in pedal currently has the following restrictions/limitations:</p>
 
 <ol>
 <li>
@@ -200,6 +200,14 @@ public CopyCommand copyCommand(ProviderAccessSpi provider) {
 
 <h2>
 <a id="release-notes" class="anchor" href="#release-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Release Notes</h2>
+
+<h2>
+<a id="110" class="anchor" href="#110" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1.0</h2>
+
+<ul>
+<li>CopyCommand's use of Javassist is now tolerant of Spring's "compound jar" or bootable jar format.</li>
+<li>CopyCommand now supports property of type that is annotated with <code>@Embeddable</code>. The embedded type with one or more columns should have all db-mapped fields annotated with <code>@Column</code>. One can override the column names with the @AttributeOverrides annotation against the getter of the embedded type. However, if using @AttributeOverrides, every column should be overridden, even if the name remains the same.</li>
+</ul>
 
 <h3>
 <a id="103" class="anchor" href="#103" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0.3</h3>
