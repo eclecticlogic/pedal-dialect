@@ -4,7 +4,7 @@
     <name>Pedal Dialect</name>
     <groupId>com.eclecticlogic</groupId>
     <artifactId>pedal-dialect</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <description>Pedal-dialect is a collection of dialect (database) and provider (e.g. Hibernate) specific implementations for use with JPA. It enables non-standard SQL data types (arrays, sets, bit-sets) and dialect specific features such as support for the Postgresql Copy command.</description>
@@ -21,7 +21,7 @@
         <url>git@github.com:eclecticlogic/pedal-dialect.gt</url>
         <developerConnection>scm:git:git@github.com:eclecticlogic/pedal-dialect.git</developerConnection>
         <connection>scm:git:git@github.com:eclecticlogic/pedal-dialect.git</connection>
-        <tag>HEAD</tag>
+        <tag>1.1.0</tag>
     </scm>
 
     <developers>
