@@ -32,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommand;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyList;
+import com.eclecticlogic.pedal.dm.Color;
 import com.eclecticlogic.pedal.dm.EmbedOverride;
 import com.eclecticlogic.pedal.dm.EmbedSimple;
 import com.eclecticlogic.pedal.dm.ExoticTypes;
@@ -144,6 +145,8 @@ public class TestPedalDialect {
             }
             et.setStatus(Status.ACTIVE);
             et.setCustom("this will be made uppercase");
+            et.setColor(Color.BLACK); // Black is converted to null. This is to test and ensure null value is 
+             // conversion is properly handled.
             list.add(et);
         }
 
@@ -154,6 +157,9 @@ public class TestPedalDialect {
         Assert.assertNotNull(entityManager.find(ExoticTypes.class, "copyCommand1"));
         Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getAuthorizations(),
                 Sets.newHashSet("b", "c", "a"));
+        
+        // Nullable converted value should be written as null.
+        Assert.assertNull(entityManager.find(ExoticTypes.class, "copyCommand0").getColor());
     }
 
 

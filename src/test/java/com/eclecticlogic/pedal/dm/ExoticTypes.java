@@ -52,7 +52,8 @@ public class ExoticTypes implements java.io.Serializable {
     private List<Long> gpa;
     private Status status;
     private String custom;
-
+    private Color color;
+    
 
     @Id
     @Column(name = "login", unique = true, nullable = false)
@@ -140,4 +141,19 @@ public class ExoticTypes implements java.io.Serializable {
         this.custom = custom;
     }
 
+
+    @Column(name = "color")
+    @Convert(converter = ColorConverter.class)
+    public Color getColor() {
+        return color;
+    }
+
+
+    
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    
+    
 }

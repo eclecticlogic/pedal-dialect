@@ -10,7 +10,8 @@ CREATE TABLE "exotic_types"(
  "scores" Bigint[] NULL,
  "gpa" Bigint[] NULL,
  "status" Character(2) NOT NULL,
- "custom" varchar NOT NULL
+ "custom" varchar NOT NULL,
+ "color" text
 )
 WITH (OIDS=FALSE)
 ;

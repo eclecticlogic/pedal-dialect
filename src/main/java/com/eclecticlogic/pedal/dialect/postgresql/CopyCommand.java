@@ -372,7 +372,11 @@ public class CopyCommand {
                             Class<?> converterClass = method.getAnnotation(Convert.class).converter();
                             methodBody.append(converterClass.getName() + " c" + i + " = (" + converterClass.getName()
                                     + ")" + converterClass.getName() + ".class.newInstance();\n");
-                            methodBody.append("builder.append(c" + i + ".convertToDatabaseColumn(v" + i + "));\n");
+                            methodBody.append("Object oc" + i + " = c" + i + ".convertToDatabaseColumn(v" + i + ");\n");
+                            methodBody.append("if (oc" + i + " == null) {builder.append(\"\\\\N\");}\n");
+                            methodBody.append("else {\n");
+                            methodBody.append("builder.append(oc" + i + ");\n");
+                            methodBody.append("}");
                         } else if (method.isAnnotationPresent(JoinColumn.class)) {
                             // We need to get the id of the joined object.
                             for (Method method2 : method.getReturnType().getMethods()) {
@@ -396,7 +400,7 @@ public class CopyCommand {
             logger.trace(methodBody.toString());
             cc.addMethod(CtNewMethod.make(methodBody.toString(), cc));
         } catch (NotFoundException | CannotCompileException e) {
-            logger.error(e.getMessage(), "Compiled body is:\n" + methodBody.toString());
+            logger.error(e.getMessage() + " Compiled body is:\n" + methodBody.toString());
             throw new RuntimeException(e.getMessage(), e);
         }
 

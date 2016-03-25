@@ -153,7 +153,11 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
-## 1.1.0
+### 1.1.1
+
+- Fixed incorrect copy-command value when non-null custom value converted usign @Convert annotation results in null value.
+
+### 1.1.0
 
 - CopyCommand's use of Javassist is now tolerant of Spring's "compound jar" or bootable jar format.
 - CopyCommand now supports property of type that is annotated with `@Embeddable`. The embedded type with one or more columns should have all db-mapped fields annotated with `@Column`. One can override the column names with the @AttributeOverrides annotation against the getter of the embedded type. However, if using @AttributeOverrides, every column should be overridden, even if the name remains the same.
