@@ -23,7 +23,7 @@ import java.sql.Types;
 import java.util.BitSet;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 import com.eclecticlogic.pedal.provider.hibernate.AbstractMutableUserType;
 
@@ -61,7 +61,7 @@ public class PostgresqlBitStringUserType extends AbstractMutableUserType {
 
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
             throws HibernateException, SQLException {
         byte[] bytes = rs.getBytes(names[0]);
 
@@ -80,7 +80,7 @@ public class PostgresqlBitStringUserType extends AbstractMutableUserType {
 
 
     @Override
-    public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session)
+    public void nullSafeSet(PreparedStatement statement, Object value, int index, SharedSessionContractImplementor session)
             throws HibernateException, SQLException {
         BitSet bits = (BitSet)value;
         StringBuilder builder = new StringBuilder();

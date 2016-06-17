@@ -4,7 +4,7 @@
     <name>Pedal Dialect</name>
     <groupId>com.eclecticlogic</groupId>
     <artifactId>pedal-dialect</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <description>Pedal-dialect is a collection of dialect (database) and provider (e.g. Hibernate) specific implementations for use with JPA. It enables non-standard SQL data types (arrays, sets, bit-sets) and dialect specific features such as support for the Postgresql Copy command.</description>
@@ -168,12 +168,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${version.hibernate}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>4.1.3.RELEASE</version>
@@ -230,7 +224,7 @@
     </dependencies>
 
     <properties>
-        <version.hibernate>4.3.6.Final</version.hibernate>
+        <version.hibernate>5.2.0.Final</version.hibernate>
         <version.slf4j>1.7.7</version.slf4j>
         <version.postgresql.jdbc>9.3-1102-jdbc41</version.postgresql.jdbc>
     </properties>

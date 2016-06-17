@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 
 /**
  * Adapter from https://forum.hibernate.org/viewtopic.php?t=946973 and
@@ -55,7 +55,7 @@ public class SetType extends ArrayType {
 
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner)
+    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
             throws HibernateException, SQLException {
         Array sqlArray = rs.getArray(names[0]);
 
@@ -74,7 +74,7 @@ public class SetType extends ArrayType {
     @SuppressWarnings("unchecked")
     @Override
     public void nullSafeSet(final PreparedStatement statement, final Object object, final int i,
-            SessionImplementor session) throws HibernateException, SQLException {
+            SharedSessionContractImplementor session) throws HibernateException, SQLException {
         Connection connection = session.connection();
         Set<Object> set = (Set<Object>) object;
         Object[] array = set == null ? new Object[] {} : set.toArray();

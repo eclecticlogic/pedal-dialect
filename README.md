@@ -153,6 +153,10 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.2.0 
+
+- Upgraded to support Hibernate 5.2.0. There is a breaking change in the UserType interface.
+
 ### 1.1.1
 
 - Fixed incorrect copy-command value when non-null custom value converted usign @Convert annotation results in null value.
