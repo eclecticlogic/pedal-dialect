@@ -155,5 +155,13 @@ public class ExoticTypes implements java.io.Serializable {
     }
 
     
+    /**
+     * To test exclusion of fields with parameters since they are not java-bean properties and return type is embeddable.
+     * @param input
+     * @return
+     */
+    public PlanetId getSomeValue(int input) {
+        return new PlanetId("test", input);
+    }
     
 }

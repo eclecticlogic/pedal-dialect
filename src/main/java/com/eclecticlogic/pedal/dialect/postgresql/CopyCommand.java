@@ -160,6 +160,9 @@ public class CopyCommand {
             List<String> fields = new ArrayList<>();
             List<Method> methods = new ArrayList<>();
             for (Method method : clz.getMethods()) {
+                if (method.getParameterCount() != 0) {
+                    continue;
+                }
                 String columnName = null;
                 if (method.isAnnotationPresent(Id.class) && method.isAnnotationPresent(GeneratedValue.class)
                         && method.getAnnotation(GeneratedValue.class).strategy() == GenerationType.IDENTITY) {

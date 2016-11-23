@@ -153,6 +153,10 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.2.1
+
+- Exclude getter methods that take parameters from being considered for copy-command field list.
+
 ### 1.2.0 
 
 - Upgraded to support Hibernate 5.2.0. There is a breaking change in the UserType interface.
