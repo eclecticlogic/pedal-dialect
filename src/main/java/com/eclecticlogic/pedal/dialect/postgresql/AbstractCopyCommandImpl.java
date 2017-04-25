@@ -74,15 +74,6 @@ public abstract class AbstractCopyCommandImpl implements CopyCommand {
     }
 
 
-
-
-
-
-
-
-
-
-
     @Override
     public void insert(EntityManager entityManager, PackagedCopyData data) {
         final StringReader reader = new StringReader(data.getBody());

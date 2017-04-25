@@ -92,12 +92,6 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
     }
 
 
-    @Override
-    public <E extends Serializable> PackagedCopyData packageCopyData(CopyList<E> entityList) {
-        return null;
-    }
-
-
     protected List<CopyAttribute> getAttributesOfInterest(Class<? extends Serializable> clz) {
         List<CopyAttribute> attributes = new ArrayList<>();
 

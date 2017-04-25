@@ -35,14 +35,6 @@ public interface CopyCommand {
 
 
     /**
-     * @param entityList
-     * @return Packages up the entity list as standalone data that can be serialized and inserted at a later point.
-     */
-    @SuppressWarnings("unchecked")
-    <E extends Serializable> PackagedCopyData packageCopyData(CopyList<E> entityList);
-
-
-    /**
      * @param entityManager Entity manager reference.
      * @param data Copy-data.
      */
