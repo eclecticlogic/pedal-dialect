@@ -181,3 +181,7 @@ Here is the general pattern of usage for the Copy Command:
 ### 1.0.1
 
 - Added UUIDBasedIdGenerator, a Hibernate id generator based on UUIDs. 
+
+### 1.1.0
+
+- Refactored copy command and added supported for ignoring non-insertable columns in CopyCommand.
