@@ -28,7 +28,7 @@ public class JoinColumnEvaluator extends AbstractMethodEvaluator {
 
     @Override
     public void evaluate(Method method, EvaluatorChain chain) {
-        if (method.isAnnotationPresent(JoinColumn.class) && method.getDeclaredAnnotation(JoinColumn.class).insertable()) {
+        if (method.isAnnotationPresent(JoinColumn.class) && method.getAnnotation(JoinColumn.class).insertable()) {
             CopyAttribute attribute = new CopyAttribute();
             attribute.getMethods().add(method);
             attribute.setColumnName(method.getAnnotation(JoinColumn.class).name());

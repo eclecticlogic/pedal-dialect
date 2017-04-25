@@ -19,6 +19,8 @@ package com.eclecticlogic.pedal.dm;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -32,25 +34,13 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "student")
-public class Student implements Serializable {
+@AttributeOverrides(value = {@AttributeOverride(name = "idBase", column = @Column(name = "id", unique = true, nullable = false, length = 36))})
+public class Student extends BaseStudent {
 
-    private String id;
     private String name;
     private String zone;
     private float gpa;
     private Date insertedOn;
-
-
-    @Id
-    @Column(name = "id", unique = true, nullable = false, length = 36)
-    public String getId() {
-        return id;
-    }
-
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
 
     @Transient

@@ -96,7 +96,7 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
         List<CopyAttribute> attributes = new ArrayList<>();
 
         for (Method method : Arrays.stream(clz.getMethods()).filter(it -> it.getParameterCount() == 0).collect(toList())) {
-            getMethodEvaluator().evaluate(method, attributes);
+            getMethodEvaluator().evaluate(method, clz, attributes);
         }
         return attributes;
     }

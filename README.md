@@ -153,7 +153,7 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
-### 1.3.0
+### 1.3.1
 
 - Refactored copy command and added supported for ignoring non-insertable columns in CopyCommand.
 

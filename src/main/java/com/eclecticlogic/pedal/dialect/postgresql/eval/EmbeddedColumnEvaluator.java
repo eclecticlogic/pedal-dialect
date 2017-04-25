@@ -47,7 +47,7 @@ public class EmbeddedColumnEvaluator extends AbstractMethodEvaluator {
                 if (overrides.containsKey(name)) {
                     columnName = overrides.get(name).column().name();
                 } else {
-                    columnName = embeddedMethod.getDeclaredAnnotation(Column.class).name();
+                    columnName = embeddedMethod.getAnnotation(Column.class).name();
                 }
                 CopyAttribute attribute = new CopyAttribute();
                 attribute.getMethods().add(method);

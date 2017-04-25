@@ -30,7 +30,7 @@ public interface MethodEvaluator {
     void evaluate(Method method, EvaluatorChain chain);
 
 
-    default void evaluate(Method method, List<CopyAttribute> attributes) {
+    default void evaluate(Method method, Class<?> clz, List<CopyAttribute> attributes) {
         List<MethodEvaluator> evaluators = new ArrayList<>();
         evaluators.add(new IdentityIdEvaluator());
         evaluators.add(new SimpleColumnEvaluator());
@@ -40,6 +40,13 @@ public interface MethodEvaluator {
 
         EvaluatorChain chain = new EvaluatorChain() {
             int index = 0;
+
+
+            @Override
+            public Class<?> getEntityClass() {
+                return clz;
+            }
+
 
             @Override
             public void add(CopyAttribute attribute) {

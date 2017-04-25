@@ -53,20 +53,19 @@ public abstract class AbstractMethodEvaluator implements MethodEvaluator {
     }
 
 
-    protected String extractColumnName(Method method) {
-        Class<?> clz = method.getDeclaringClass();
+    protected String extractColumnName(Method method, Class<?> clz) {
         String beanPropertyName = getPropertyName(method);
 
         String columnName = null;
         if (clz.isAnnotationPresent(AttributeOverrides.class)) {
-            for (AttributeOverride annotation : clz.getDeclaredAnnotation(AttributeOverrides.class).value()) {
+            for (AttributeOverride annotation : clz.getAnnotation(AttributeOverrides.class).value()) {
                 if (annotation.name().equals(beanPropertyName)) {
                     columnName = annotation.column().name();
                     break;
                 }
             }
         } else if (clz.isAnnotationPresent(AttributeOverride.class)) {
-            AttributeOverride annotation = clz.getDeclaredAnnotation(AttributeOverride.class);
+            AttributeOverride annotation = clz.getAnnotation(AttributeOverride.class);
             if (annotation.name().equals(beanPropertyName)) {
                 columnName = annotation.column().name();
             }
@@ -78,13 +77,13 @@ public abstract class AbstractMethodEvaluator implements MethodEvaluator {
     protected Map<String, AttributeOverride> getAttributeOverrides(AccessibleObject object) {
         Map<String, AttributeOverride> overrides = new HashMap<>();
         if (object.isAnnotationPresent(AttributeOverrides.class)) {
-            AttributeOverrides o = object.getDeclaredAnnotation(AttributeOverrides.class);
+            AttributeOverrides o = object.getAnnotation(AttributeOverrides.class);
             for (AttributeOverride override : o.value()) {
                 overrides.put(override.name(), override);
             }
         }
         if (object.isAnnotationPresent(AttributeOverride.class)) {
-            AttributeOverride override = object.getDeclaredAnnotation(AttributeOverride.class);
+            AttributeOverride override = object.getAnnotation(AttributeOverride.class);
             overrides.put(override.name(), override);
         }
         return overrides;

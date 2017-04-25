@@ -116,7 +116,7 @@ public class CopyAttribute {
 
 
     public Method getJoinColumnIdMethod() {
-        return Arrays.stream(getEntityMethod().getReturnType().getDeclaredMethods()) //
+        return Arrays.stream(getEntityMethod().getReturnType().getMethods()) //
                 .filter(it -> it.isAnnotationPresent(Id.class)).findFirst().get();
     }
 }

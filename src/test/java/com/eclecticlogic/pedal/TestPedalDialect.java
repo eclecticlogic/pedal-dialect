@@ -76,7 +76,7 @@ public class TestPedalDialect {
 
         Student student = new Student();
         student.setGpa(4.0f);
-        student.setId("custom_student");
+        student.setIdBase("custom_student");
         student.setMiddleName("joe");
         student.setName("schmoe");
         student.setZone("z'");
@@ -116,7 +116,7 @@ public class TestPedalDialect {
     @Transactional
     public void testInsertOfRenamedTable() {
         Student student = new Student();
-        student.setId("abc");
+        student.setIdBase("abc");
         student.setGpa(3.9f);
         student.setInsertedOn(new Date());
         student.setName("Joe Schmoe");
@@ -126,7 +126,7 @@ public class TestPedalDialect {
         entityManager.persist(student);
 
         Student s = entityManager.find(Student.class, "abc");
-        Assert.assertEquals(s.getId(), "abc");
+        Assert.assertEquals(s.getIdBase(), "abc");
         Assert.assertEquals(s.getGpa(), 3.9f, 0.001);
         Assert.assertEquals(s.getName(), "Joe Schmoe");
     }
@@ -139,7 +139,7 @@ public class TestPedalDialect {
 
         Student student = new Student();
         student.setGpa(4.0f);
-        student.setId("exotic_student");
+        student.setIdBase("exotic_student");
         student.setMiddleName("joe1");
         student.setName("schmoe1");
         student.setZone("z");
@@ -180,6 +180,25 @@ public class TestPedalDialect {
         
         // Nullable converted value should be written as null.
         Assert.assertNull(entityManager.find(ExoticTypes.class, "copyCommand0").getColor());
+    }
+
+
+    @Test
+    @Transactional
+    public void testAttributeOverrideWithCopyCommand() {
+        CopyList<Student> list = new CopyList<>();
+        {
+            Student student = new Student();
+            student.setGpa(4.0f);
+            student.setIdBase("attrib");
+            student.setMiddleName("joe1");
+            student.setName("schmoe1");
+            student.setZone("z");
+            student.setInsertedOn(new Date());
+            list.add(student);
+        }
+        copyCommand.insert(entityManager, list);
+        Assert.assertNotNull(entityManager.find(Student.class, "attrib"));
     }
 
 

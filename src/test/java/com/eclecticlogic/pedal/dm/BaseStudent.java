@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package com.eclecticlogic.pedal.dialect.postgresql.eval;
+package com.eclecticlogic.pedal.dm;
 
-import com.eclecticlogic.pedal.dialect.postgresql.CopyAttribute;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 /**
- * Created by kabram on 4/6/17.
+ * Created by kabram on 4/25/17.
  */
-public interface EvaluatorChain {
+@MappedSuperclass
+public class BaseStudent implements Serializable {
 
-    Class<?> getEntityClass();
-
-
-    /**
-     * Add attribute to evaluated attributes list.
-     * @param attribute
-     */
-    void add(CopyAttribute attribute);
+    private String idBase;
 
 
-    /**
-     * Call the next method evaluator.
-     */
-    void doNext();
+    @Id
+    @Column
+    public String getIdBase() {
+        return idBase;
+    }
+
+
+    public void setIdBase(String id) {
+        this.idBase = id;
+    }
 }

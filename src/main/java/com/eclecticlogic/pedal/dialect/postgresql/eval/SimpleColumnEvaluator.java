@@ -28,10 +28,10 @@ public class SimpleColumnEvaluator extends AbstractMethodEvaluator {
 
     @Override
     public void evaluate(Method method, EvaluatorChain chain) {
-        if (method.isAnnotationPresent(Column.class) && method.getDeclaredAnnotation(Column.class).insertable()) {
+        if (method.isAnnotationPresent(Column.class) && method.getAnnotation(Column.class).insertable()) {
             CopyAttribute attribute = new CopyAttribute();
             attribute.getMethods().add(method);
-            attribute.setColumnName(extractColumnName(method));
+            attribute.setColumnName(extractColumnName(method, chain.getEntityClass()));
             chain.add(attribute);
         } else {
             chain.doNext();
