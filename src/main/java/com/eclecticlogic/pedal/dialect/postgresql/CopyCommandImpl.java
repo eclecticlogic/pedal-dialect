@@ -60,6 +60,13 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
 
     @Override
     public <E extends Serializable> void insert(EntityManager entityManager, CopyList<E> entityList) {
+        if (!entityList.isEmpty()) {
+            _insert(entityManager, entityList);
+        }
+    }
+
+
+    public <E extends Serializable> void _insert(EntityManager entityManager, CopyList<E> entityList) {
         Class<E> clz = (Class<E>) entityList.get(0).getClass();
         extractorsByClass.computeIfAbsent(clz, (cz) -> getExtractor(cz));
 
