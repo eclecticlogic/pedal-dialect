@@ -33,10 +33,4 @@ public interface CopyCommand {
      */
     <E extends Serializable> void insert(EntityManager entityManager, CopyList<E> entityList);
 
-
-    /**
-     * @param entityManager Entity manager reference.
-     * @param data Copy-data.
-     */
-    void insert(EntityManager entityManager, final PackagedCopyData data);
 }

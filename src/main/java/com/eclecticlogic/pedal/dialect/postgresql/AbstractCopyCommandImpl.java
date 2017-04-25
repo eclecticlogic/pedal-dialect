@@ -18,25 +18,10 @@ package com.eclecticlogic.pedal.dialect.postgresql;
 
 import com.eclecticlogic.pedal.connection.ConnectionAccessor;
 import com.eclecticlogic.pedal.provider.ProviderAccessSpi;
-import org.postgresql.copy.CopyManager;
-import org.postgresql.core.BaseConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.io.StringReader;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by kabram.
@@ -73,22 +58,4 @@ public abstract class AbstractCopyCommandImpl implements CopyCommand {
         }
     }
 
-
-    @Override
-    public void insert(EntityManager entityManager, PackagedCopyData data) {
-        final StringReader reader = new StringReader(data.getBody());
-        providerAccessSpi.run(entityManager, (connection) -> {
-            try {
-                CopyManager copyManager = new CopyManager((BaseConnection) connectionAccessor
-                        .getRawConnection(connection));
-                long t1 = System.currentTimeMillis();
-                copyManager.copyIn(data.getCopySql(), reader);
-                long elapsedTime = System.currentTimeMillis() - t1;
-                logger.debug("Wrote {} inserts in {} seconds", data.getSize(), Math.round(elapsedTime / 10.0) / 100.0);
-            } catch (Exception e) {
-                logger.trace("Command passed: {}", data);
-                throw new RuntimeException(e.getMessage(), e);
-            }
-        });
-    }
 }
