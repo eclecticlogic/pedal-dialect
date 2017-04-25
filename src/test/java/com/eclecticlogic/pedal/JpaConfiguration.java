@@ -16,12 +16,11 @@
  */
 package com.eclecticlogic.pedal;
 
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-
+import com.eclecticlogic.pedal.connection.TomcatJdbcConnectionAccessor;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommand;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommandImpl;
-import com.eclecticlogic.pedal.dialect.postgresql.CopyCommandOld;
+import com.eclecticlogic.pedal.provider.ProviderAccessSpi;
+import com.eclecticlogic.pedal.provider.hibernate.HibernateProviderAccessSpiImpl;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -29,9 +28,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 
-import com.eclecticlogic.pedal.connection.TomcatJdbcConnectionAccessor;
-import com.eclecticlogic.pedal.provider.ProviderAccessSpi;
-import com.eclecticlogic.pedal.provider.hibernate.HibernateProviderAccessSpiImpl;
+import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 
 /**
  * @author kabram.
