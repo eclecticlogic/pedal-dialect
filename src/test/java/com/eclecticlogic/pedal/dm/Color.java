@@ -54,7 +54,7 @@ public enum Color {
     public static Color forCode(String code) {
         Color value = enumByCode.get(code);
         if (value == null) {
-            throw new RuntimeException("Invalid code sent: " + code);
+            throw new RuntimeException("Null value sent.");
         }
         return value;
     }

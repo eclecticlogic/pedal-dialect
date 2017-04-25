@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package com.eclecticlogic.pedal.dialect.postgresql;
+package com.eclecticlogic.pedal.dialect.postgresql.eval;
+
+import com.eclecticlogic.pedal.dialect.postgresql.CopyAttribute;
 
 /**
- * Core interface implemented by runtime generated classes.
- *
- * Created by kabram.
+ * Created by kabram on 4/6/17.
  */
-public interface CopyExtractor<E> {
+public interface EvaluatorChain {
 
     /**
-     * @return Comma-separated list of field names.
+     * Add attribute to evaluated attributes list.
+     * @param attribute
      */
-    String getFieldList();
+    void add(CopyAttribute attribute);
 
 
     /**
-     * @param entity
-     * @return Copy-encoded entity data.
+     * Call the next method evaluator.
      */
-    String getValueList(E entity);
-
-
+    void doNext();
 }

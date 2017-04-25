@@ -16,20 +16,6 @@
  */
 package com.eclecticlogic.pedal;
 
-import java.util.BitSet;
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommand;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyList;
 import com.eclecticlogic.pedal.dm.Color;
@@ -44,6 +30,18 @@ import com.eclecticlogic.pedal.dm.VehicleIdentifier;
 import com.eclecticlogic.pedal.provider.ProviderAccess;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
+import java.util.BitSet;
+import java.util.Date;
 
 /**
  * @author kabram.
@@ -75,6 +73,16 @@ public class TestPedalDialect {
     @Test
     @Transactional
     public void insertTestForCustomTypes() {
+
+        Student student = new Student();
+        student.setGpa(4.0f);
+        student.setId("custom_student");
+        student.setMiddleName("joe");
+        student.setName("schmoe");
+        student.setZone("z'");
+        student.setInsertedOn(new Date());
+        entityManager.persist(student);
+
         ExoticTypes et = new ExoticTypes();
         et.setLogin("inserter");
         BitSet bs = new BitSet(7);
@@ -88,6 +96,7 @@ public class TestPedalDialect {
         et.setGpa(Lists.<Long> newArrayList());
         et.setStatus(Status.ACTIVE);
         et.setCustom("abc");
+        et.setStudent(student);
 
         entityManager.persist(et);
         entityManager.flush();
@@ -128,6 +137,15 @@ public class TestPedalDialect {
     public void testCopyCommand() {
         CopyList<ExoticTypes> list = new CopyList<>();
 
+        Student student = new Student();
+        student.setGpa(4.0f);
+        student.setId("exotic_student");
+        student.setMiddleName("joe1");
+        student.setName("schmoe1");
+        student.setZone("z");
+        student.setInsertedOn(new Date());
+        entityManager.persist(student);
+
         // The copy-command can insert 100k of these per second.
         for (int i = 0; i < 10; i++) {
             ExoticTypes et = new ExoticTypes();
@@ -147,6 +165,8 @@ public class TestPedalDialect {
             et.setCustom("this will be made uppercase");
             et.setColor(Color.BLACK); // Black is converted to null. This is to test and ensure null value is 
              // conversion is properly handled.
+            et.setTotal(i * 10);
+            et.setStudent(student);
             list.add(et);
         }
 

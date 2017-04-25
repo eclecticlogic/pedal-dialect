@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * List of entities to be inserted via the CopyCommand
+ * List of entities to be inserted via the CopyCommandOld
  * 
  * @author kabram.
  *

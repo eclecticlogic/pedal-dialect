@@ -16,24 +16,10 @@
 
 package com.eclecticlogic.pedal.dialect.postgresql;
 
+import java.io.Serializable;
+
 /**
- * Core interface implemented by runtime generated classes.
- *
- * Created by kabram.
+ * Created by kabram on 4/25/17.
  */
-public interface CopyExtractor<E> {
-
-    /**
-     * @return Comma-separated list of field names.
-     */
-    String getFieldList();
-
-
-    /**
-     * @param entity
-     * @return Copy-encoded entity data.
-     */
-    String getValueList(E entity);
-
-
+public abstract class AbstractCopyExtractor<E extends Serializable> implements CopyExtractor<E> {
 }

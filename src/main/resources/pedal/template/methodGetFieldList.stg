@@ -1,0 +1,12 @@
+
+methodBody(attributes) ::= <<
+    public String getFieldList() {
+        java.lang.StringBuilder builder = new java.lang.StringBuilder();
+        <attributes:append()>
+        return builder.substring(1);
+    }
+>>
+
+append(attribute) ::= <<
+    builder.append(",").append("<attribute.columnName>");
+>>

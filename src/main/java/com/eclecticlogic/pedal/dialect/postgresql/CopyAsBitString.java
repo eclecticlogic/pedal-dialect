@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * Use this annotation on a Postgresql BitString mapped to a BitSet using custom-type mapping to enable
- * CopyCommand support for bulk-inserts.
+ * CopyCommandOld support for bulk-inserts.
  * 
  * The number of bits is read from the @Column annotation.
  * 

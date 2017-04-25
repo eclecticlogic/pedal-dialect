@@ -18,6 +18,7 @@ package com.eclecticlogic.pedal.dm;
 
 // Generated May 28, 2014 8:44:27 AM by Hibernate Tools 4.3.1
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Set;
@@ -25,9 +26,14 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.eclecticlogic.pedal.dialect.postgresql.CopyEmptyAsNull;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
@@ -53,6 +59,9 @@ public class ExoticTypes implements java.io.Serializable {
     private Status status;
     private String custom;
     private Color color;
+    private int total;
+    private List<String> capitals = new ArrayList<>();
+    private Student student;
     
 
     @Id
@@ -163,5 +172,41 @@ public class ExoticTypes implements java.io.Serializable {
     public PlanetId getSomeValue(int input) {
         return new PlanetId("test", input);
     }
-    
+
+
+    @Column(name = "total", nullable = false)
+    public int getTotal() {
+        return total;
+    }
+
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+
+    @Column(name = "capitals")
+    @Type(type = "com.eclecticlogic.pedal.provider.hibernate.ListType", parameters = {
+            @Parameter(name = ArrayType.DIALECT_PRIMITIVE_NAME, value = PostgresqlArrayPrimitiveName.STRING)})
+    @CopyEmptyAsNull
+    public List<String> getCapitals() {
+        return capitals;
+    }
+
+
+    public void setCapitals(List<String> capitals) {
+        this.capitals = capitals;
+    }
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    public Student getStudent() {
+        return student;
+    }
+
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 }

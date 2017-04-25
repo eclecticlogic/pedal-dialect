@@ -42,7 +42,7 @@ public class Student implements Serializable {
 
 
     @Id
-    @Column(name = "student_id", unique = true, nullable = false, length = 36)
+    @Column(name = "id", unique = true, nullable = false, length = 36)
     public String getId() {
         return id;
     }

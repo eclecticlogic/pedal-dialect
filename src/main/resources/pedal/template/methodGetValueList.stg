@@ -1,0 +1,82 @@
+
+methodBody(attributes, entityClass) ::= <<
+    public String getValueList(Object entity) {
+        StringBuilder builder = new StringBuilder();
+        <entityClass.name> typed = (<entityClass.name>)entity;
+        try {
+            <attributes:process()>
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        builder.append("\\n");
+        return builder.substring(1);
+    }
+>>
+
+process(attribute) ::= <<
+    builder.append("\\t");
+    {
+    <if(attribute.entityMethod.returnType.primitive)>
+        builder.append(typed.<attribute.entityMethod.name>());
+    <else>
+        <attribute.entityMethod.returnType.name> var = typed.<attribute.entityMethod.name>();
+        if (var == null) {
+            builder.append("\\\\N");
+        } else {
+            <if(attribute.copyConverter)>
+                <attribute.copyConverterClass.name> converter = (<attribute.copyConverterClass.name>)<attribute.copyConverterClass.name>.class.newInstance();
+                String s = converter.convert(var);
+                builder.append(s == null ? "\\\\N" : s);
+            <elseif(attribute.jpaConverter)>
+                <attribute.jpaConverterClass.name> converter = (<attribute.jpaConverterClass.name>)<attribute.jpaConverterClass.name>.class.newInstance();
+                Object converted = converter.convertToDatabaseColumn(var);
+                builder.append(converted == null ? "\\\\N" : converted);
+            <elseif(attribute.collection)>
+                <if(attribute.copyEmtpyAsNull)>
+                    if (var.isEmpty()) {
+                        builder.append("\\\\N");
+                    } else {
+                <endif>
+                java.util.Iterator it = var.iterator();
+                StringBuilder array = new StringBuilder();
+                while (it.hasNext()) {
+                    Object o = it.next();
+                    array.append(",").append(o);
+                }
+                String arrayStr = array.length() == 0 ? "" : array.substring(1);
+                builder.append("{").append(arrayStr).append("}");
+                <if(attribute.copyEmtpyAsNull)>
+                    }
+                <endif>
+            <elseif(attribute.copyAsBitString)>
+                for (int i = 0; i \< <attribute.columnLength>; i++) {
+                    builder.append(var.get(i) ? "1" : "0");
+                }
+            <elseif(attribute.joinColumn)>
+                builder.append(var.<attribute.joinColumnIdMethod.name>());
+            <else>
+                <simpleValue(attribute, attribute.methods, "typed")>
+            <endif>
+        }
+    <endif>
+    }
+>>
+
+simpleValue(attribute, methods, var) ::= <<
+    <if(methods)>
+        <first(methods).returnType.name> <attribute.newVariable> = <var>.<first(methods).name>();
+        <if(first(methods).returnType.primitive)>
+            builder.append(<attribute.variable>);
+        <else>
+            if (<attribute.variable> == null) {
+                builder.append("\\\\N");
+            } else {
+                <if(rest(methods))>
+                    <simpleValue(attribute,rest(methods), attribute.variable)>
+                <else>
+                    builder.append(<attribute.variable>);
+                <endif>
+            }
+        <endif>
+    <endif>
+>>

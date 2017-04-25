@@ -11,7 +11,10 @@ CREATE TABLE "exotic_types"(
  "gpa" Bigint[] NULL,
  "status" Character(2) NOT NULL,
  "custom" varchar NOT NULL,
- "color" text
+ "total" integer not null,
+ "color" text,
+ "capitals" Character varying(20)[] null,
+ "student_id" varchar not null
 )
 WITH (OIDS=FALSE)
 ;
@@ -24,7 +27,7 @@ CREATE TABLE "graduate_student" (
 "name" varchar NOT NULL,
 "zone" varchar NOT NULL,
 "gpa" numeric(10, 4) NOT NULL,
-"insertedOn" timestamp NOT NULL
+"inserted_on" timestamp NOT NULL
 )
 WITH (OIDS=FALSE)
 ;
