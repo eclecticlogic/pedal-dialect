@@ -32,7 +32,7 @@ process(attribute) ::= <<
                 Object converted = converter.convertToDatabaseColumn(var);
                 builder.append(converted == null ? "\\\\N" : converted);
             <elseif(attribute.collection)>
-                <if(attribute.copyEmtpyAsNull)>
+                <if(attribute.copyEmptyAsNull)>
                     if (var.isEmpty()) {
                         builder.append("\\\\N");
                     } else {
@@ -45,7 +45,7 @@ process(attribute) ::= <<
                 }
                 String arrayStr = array.length() == 0 ? "" : array.substring(1);
                 builder.append("{").append(arrayStr).append("}");
-                <if(attribute.copyEmtpyAsNull)>
+                <if(attribute.copyEmptyAsNull)>
                     }
                 <endif>
             <elseif(attribute.copyAsBitString)>

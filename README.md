@@ -153,6 +153,10 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.3.4
+
+- Fixed typo causing error in usage of CopyEmptyAsNull annotation.
+
 ### 1.3.3
 
 - Refactored copy command and added supported for ignoring non-insertable columns in CopyCommand.
