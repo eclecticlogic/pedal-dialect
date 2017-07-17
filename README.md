@@ -22,7 +22,8 @@ Download the pedal-dialect jar from Maven central:
 ```
 	<groupId>com.eclecticlogic</groupId>
 	<artifactId>pedal-dialect</artifactId>
-	<version>1.3.4</version>
+	<version>1.3.5</version>
+
 ```
 
 Minimum dependencies that you need to provide in your application:
@@ -153,9 +154,13 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.3.5 
+
+- Fixed issue with `@Embeddable` type returned by getter that is marked as `@Transient`.
+
 ### 1.3.4
 
-- Fixed typo causing error in usage of CopyEmptyAsNull annotation.
+- Fixed typo causing error in usage of `@CopyEmptyAsNull` annotation.
 
 ### 1.3.3
 

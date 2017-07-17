@@ -32,6 +32,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.eclecticlogic.pedal.dialect.postgresql.CopyEmptyAsNull;
 import org.hibernate.annotations.Parameter;
@@ -208,5 +209,16 @@ public class ExoticTypes implements java.io.Serializable {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+
+    @Transient // Transient should prevent embeddable from being added to copy list.
+    public VehicleIdentifier getVehicleIdentifier() {
+        return null;
+    }
+
+
+    public void setVehicleIdentifier() {
+        // noop
     }
 }

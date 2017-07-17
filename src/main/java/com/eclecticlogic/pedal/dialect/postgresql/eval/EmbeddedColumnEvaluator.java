@@ -22,6 +22,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Transient;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
@@ -35,7 +36,8 @@ public class EmbeddedColumnEvaluator extends AbstractMethodEvaluator {
 
     @Override
     public void evaluate(Method method, EvaluatorChain chain) {
-        if (method.getReturnType().isAnnotationPresent(Embeddable.class)) {
+        if (method.getReturnType().isAnnotationPresent(Embeddable.class) &&
+                !method.isAnnotationPresent(Transient.class)) {
             Map<String, AttributeOverride> overrides = getAttributeOverrides(method);
 
             Class<?> embeddedClz = method.getReturnType();
