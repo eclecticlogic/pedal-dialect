@@ -63,6 +63,7 @@ public class ExoticTypes implements java.io.Serializable {
     private int total;
     private List<String> capitals = new ArrayList<>();
     private Student student;
+    private byte[] image;
     
 
     @Id
@@ -220,5 +221,16 @@ public class ExoticTypes implements java.io.Serializable {
 
     public void setVehicleIdentifier() {
         // noop
+    }
+
+
+    @Column(name = "image_data")
+    public byte[] getImage() {
+        return image;
+    }
+
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

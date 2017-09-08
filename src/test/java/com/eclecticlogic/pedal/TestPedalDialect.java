@@ -40,6 +40,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.BitSet;
 import java.util.Date;
 
@@ -134,7 +137,7 @@ public class TestPedalDialect {
 
     @Test
     @Transactional
-    public void testCopyCommand() {
+    public void testCopyCommand() throws IOException {
         CopyList<ExoticTypes> list = new CopyList<>();
 
         Student student = new Student();
@@ -167,6 +170,7 @@ public class TestPedalDialect {
              // conversion is properly handled.
             et.setTotal(i * 10);
             et.setStudent(student);
+            et.setImage(Files.readAllBytes(Paths.get(".", "src/test/resources/binary.data")));
             list.add(et);
         }
 

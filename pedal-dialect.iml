@@ -39,6 +39,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.springframework:spring-tx:4.3.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:stringtemplate:4.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.antlr:antlr-runtime:3.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.tomcat:tomcat-jdbc:8.0.15" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.tomcat:tomcat-juli:8.0.15" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.jolbox:bonecp:0.8.0.RELEASE" level="project" />

@@ -19,7 +19,7 @@ process(attribute) ::= <<
     <if(attribute.entityMethod.returnType.primitive)>
         builder.append(typed.<attribute.entityMethod.name>());
     <else>
-        <attribute.entityMethod.returnType.name> var = typed.<attribute.entityMethod.name>();
+        <typeNameEvaluator(attribute.entityMethod)> var = typed.<attribute.entityMethod.name>();
         if (var == null) {
             builder.append("\\\\N");
         } else {
@@ -64,9 +64,11 @@ process(attribute) ::= <<
 
 simpleValue(attribute, methods, var) ::= <<
     <if(methods)>
-        <first(methods).returnType.name> <attribute.newVariable> = <var>.<first(methods).name>();
+        <typeNameEvaluator(first(methods))> <attribute.newVariable> = <var>.<first(methods).name>();
         <if(first(methods).returnType.primitive)>
             builder.append(<attribute.variable>);
+        <elseif(first(methods).returnType.array)>
+            builder.append(<hexEncode(attribute.variable)>);
         <else>
             if (<attribute.variable> == null) {
                 builder.append("\\\\N");
@@ -74,9 +76,21 @@ simpleValue(attribute, methods, var) ::= <<
                 <if(rest(methods))>
                     <simpleValue(attribute,rest(methods), attribute.variable)>
                 <else>
-                    builder.append(<attribute.variable>);
+                    <if(first(methods).returnType.array)>
+                        builder.append(<hexEncode(attribute.variable)>);
+                    <else>
+                        builder.append(<attribute.variable>);
+                    <endif>
                 <endif>
             }
         <endif>
     <endif>
+>>
+
+typeNameEvaluator(method) ::= <<
+    <if(method.returnType.array)><method.returnType.componentType>[]<else><method.returnType.name><endif>
+>>
+
+hexEncode(var) ::= <<
+    "\\\\\\\\x" + org.apache.commons.codec.binary.Hex.encodeHexString(<var>)
 >>

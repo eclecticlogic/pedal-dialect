@@ -14,7 +14,8 @@ CREATE TABLE "exotic_types"(
  "total" integer not null,
  "color" text,
  "capitals" Character varying(20)[] null,
- "student_id" varchar not null
+ "student_id" varchar not null,
+ "image_data" bytea
 )
 WITH (OIDS=FALSE)
 ;

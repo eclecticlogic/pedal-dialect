@@ -22,7 +22,7 @@ Download the pedal-dialect jar from Maven central:
 ```
 	<groupId>com.eclecticlogic</groupId>
 	<artifactId>pedal-dialect</artifactId>
-	<version>1.3.5</version>
+	<version>1.3.6</version>
 
 ```
 
@@ -153,6 +153,10 @@ Here is the general pattern of usage for the Copy Command:
 
 
 ## Release Notes
+
+### 1.3.6
+
+- Added support for byte[]. For now, any primitive array is assumed to be byte[] and mapped tobytea data type.
 
 ### 1.3.5 
 
