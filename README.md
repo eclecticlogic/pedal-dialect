@@ -12,7 +12,7 @@ Pedal-dialect, a member of the Pedal family ([pedal-tx](https://github.com/eclec
 	- List and Set user-types.
 - Postgresql specific features
 	- Adaptation of List/Set type for Hibernate
-	- Hibernate user-type for Postgres bit arra
+	- Hibernate user-type for Postgres bit arrays
 	- Support for using the COPY command directly with JPA entity classes.
 
 ## Getting started
