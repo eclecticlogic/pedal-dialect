@@ -117,7 +117,7 @@ Note: The BIT_LENGTH parameter is required because Hibernate User-Types cannot a
 
 The Postgresql [Copy](http://www.postgresql.org/docs/9.1/static/sql-copy.html) command provides a very high performance insert capability. One can easily achieve 100k inserts per second using it. For background and features that are bypassed by the copy command refer to the official [documentation](http://www.postgresql.org/docs/9.1/static/sql-copy.html).
 
-The copy command works in text or binary mode. Our tests show that the binary mode produces a larger data stream and therefore actually results in slower performance over the network. The text mode requires data to be encoded into delimited columns and rows. Such a format has a high-impedance mismatch with the typical manner in which objects are handled in an ORM. The Copy command feature of pedal overcomes this mismatch by allowing a collection of JPA entities written to the database. The pedal framework does the work of assembling the text encoding of the data in the JPA entities and it does so by creating a Javassist based custom class to optimize on performance.
+The copy command works in text or binary mode. Our tests show that the binary mode produces a larger data stream and therefore actually results in slower performance over the network. The text mode requires data to be encoded into delimited columns and rows. Such a format has a high-impedance mismatch with the typical manner in which objects are handled in an ORM. The Copy command feature of pedal overcomes this mismatch by allowing a collection of JPA entities written to the database. The pedal framework does the work of assembling the text encoding of the data in the JPA entities and it does so by creating a Javassist based custom class to optimize on performance. 
 
 The `CopyCommand` implementation in pedal currently has the following restrictions/limitations:
 
@@ -127,6 +127,7 @@ The `CopyCommand` implementation in pedal currently has the following restrictio
 4. Array types can only be arrays of primitives. Postgresql `bit` arrays are supported if the entity field data type is `java.util.BitSet`. Apply the `@CopyAsBitString` annotation to the getter to support writing to the Postgresql bit array. The `@Column` annotation must have the length set to the bit array length in Postgresql.
 5. Embedded id support if `@EmbeddedId` annotation is present and `@AttributeOverrides` annotation denotes pk columns. See `Planet` class in the test.
 6. No specific distinction between Temporal `TIMESTAMP` and `DATE`.
+7. CopyCommand needs access to the underlying Postgresql Connection. This requires writing connection-pool specific adapters. The framework comes with support for popular ones and new ones can be easily written.
 
 The `CopyCommand` does support a generic mechanism to support custom-types or work-around the above limitations using a `ConversionHelper`. For any field where you want to define custom conversion, apply the `@CopyConverter` annotation with a reference to an implementation of a suitable `ConversionHelper`.
 
