@@ -155,6 +155,10 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.4
+
+- Added support for HikariCP 3.1 for Java 8/9.
+
 ### 1.3.6
 
 - Added support for byte[]. For now, any primitive array is assumed to be byte[] and mapped tobytea data type.
