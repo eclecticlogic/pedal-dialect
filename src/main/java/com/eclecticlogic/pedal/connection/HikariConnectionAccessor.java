@@ -18,7 +18,6 @@ package com.eclecticlogic.pedal.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Wrapper;
 
 /**
  * For use with HikariCP
@@ -33,7 +32,7 @@ public class HikariConnectionAccessor implements ConnectionAccessor {
     @Override
     public Connection getRawConnection(Connection providerConnection) {
         try {
-            return ((Wrapper)providerConnection).unwrap(Connection.class);
+            return (providerConnection).unwrap(Connection.class);
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

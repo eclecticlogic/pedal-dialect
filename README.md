@@ -155,6 +155,11 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+
+### 1.5
+
+- Removed dependency on Javassist to enable Java 9/10 support.
+
 ### 1.4
 
 - Added support for HikariCP 3.1 for Java 8/9.

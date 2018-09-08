@@ -17,7 +17,6 @@
 package com.eclecticlogic.pedal;
 
 import com.eclecticlogic.pedal.connection.HikariConnectionAccessor;
-import com.eclecticlogic.pedal.connection.TomcatJdbcConnectionAccessor;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommand;
 import com.eclecticlogic.pedal.dialect.postgresql.CopyCommandImpl;
 import com.eclecticlogic.pedal.provider.ProviderAccessSpi;
@@ -47,15 +46,15 @@ public class JpaConfiguration {
      * configuration below. 
      */
  
-//    @Bean
-//    DataSource hikari() {
-//        HikariDataSource ds = new HikariDataSource();
-//        ds.setJdbcUrl("jdbc:postgresql://localhost/pedal");
-//        ds.setUsername("postgres");
-//        ds.setPassword("postgres");
-//        ds.setMaximumPoolSize(3);
-//        return ds;
-//    }
+    @Bean
+    DataSource hikari() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl("jdbc:postgresql://localhost/pedal");
+        ds.setUsername("postgres");
+        ds.setPassword("postgres");
+        ds.setMaximumPoolSize(3);
+        return ds;
+    }
 
     /* 
      * Uncomment to test against Apache commons dbcp-2. Instantiation the hikari connection accessor in the copyCommand bean 
@@ -72,7 +71,8 @@ public class JpaConfiguration {
 //        bds.setAccessToUnderlyingConnectionAllowed(true); // Very important!
 //        return bds;
 //    }
-    
+
+
 
     @Bean
     HibernateProviderAccessSpiImpl hibernateProvider(EntityManagerFactory factory) {
@@ -99,7 +99,7 @@ public class JpaConfiguration {
     public CopyCommand copyCommand(ProviderAccessSpi provider) {
         CopyCommandImpl command = new CopyCommandImpl();
         command.setProviderAccessSpi(provider);
-        command.setConnectionAccessor(new TomcatJdbcConnectionAccessor());
+        command.setConnectionAccessor(new HikariConnectionAccessor());
         return command;
     }
 }

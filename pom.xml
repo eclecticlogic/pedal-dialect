@@ -195,6 +195,11 @@
             <artifactId>commons-codec</artifactId>
             <version>1.10</version>
         </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>joor-java-8</artifactId>
+            <version>0.9.9</version>
+        </dependency>
 
         <!-- Connection accessors. One of these must be provided by your application -->
         <dependency>

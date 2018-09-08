@@ -18,12 +18,7 @@ package com.eclecticlogic.pedal.dialect.postgresql;
 
 import com.eclecticlogic.pedal.dialect.postgresql.eval.EvaluatorChain;
 import com.eclecticlogic.pedal.dialect.postgresql.eval.MethodEvaluator;
-import javassist.CannotCompileException;
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtNewMethod;
-import javassist.NotFoundException;
+import org.joor.Reflect;
 import org.postgresql.copy.CopyIn;
 import org.postgresql.copy.CopyManager;
 import org.postgresql.core.BaseConnection;
@@ -43,14 +38,14 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by kabram.
  */
 public class CopyCommandImpl extends AbstractCopyCommandImpl {
 
-    private static final String COPY_EXTRACTOR_PACKAGE = "com.eclecticlogic.pedal.dialect.postgresql.extractor.";
+    private static final String COPY_EXTRACTOR_PACKAGE = "com.eclecticlogic.pedal.dialect.postgresql.extractor";
 
     private ConcurrentHashMap<Class<? extends Serializable>, CopyExtractor<? extends Serializable>> extractorsByClass = new ConcurrentHashMap<>();
     // This is used to prevent linkage error due to concurrent creation of classes.
@@ -123,23 +118,29 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
     protected <E extends Serializable> CopyExtractor<E> getExtractor(Class<E> clz) {
         List<CopyAttribute> attributes = getAttributesOfInterest(clz);
 
-        ClassPool pool = ClassPool.getDefault();
-        pool.insertClassPath(new ClassClassPath(AbstractCopyExtractor.class));
-        CtClass cc = pool.makeClass(COPY_EXTRACTOR_PACKAGE + clz.getSimpleName() + "$Extractor_" + extractorNameSuffix
-                .incrementAndGet());
-        try {
-            cc.setSuperclass(pool.get(AbstractCopyExtractor.class.getName()));
+        String className = clz.getSimpleName() + "$Extractor_" + extractorNameSuffix.incrementAndGet();
+        StringBuilder classBody = new StringBuilder();
+        classBody.append(getClassShell(COPY_EXTRACTOR_PACKAGE, className, AbstractCopyExtractor.class.getName()));
+        classBody.append("\n");
+        classBody.append(getFieldListBody(attributes));
+        classBody.append("\n");
+        classBody.append(getValueListBody(attributes, clz));
+        classBody.append("\n");
+        classBody.append("}");
 
-            cc.addMethod(CtNewMethod.make(getFieldListBody(attributes), cc));
-            cc.addMethod(CtNewMethod.make(getValueListBody(attributes, clz), cc));
-        } catch (CannotCompileException | NotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            return (CopyExtractor<E>) cc.toClass().newInstance();
-        } catch (CannotCompileException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return Reflect.compile(COPY_EXTRACTOR_PACKAGE + "." + className, classBody.toString()).create().get();
+    }
+
+
+    protected String getClassShell(String packageName, String clsName, String superName) {
+        STGroup group = new STGroupFile("pedal/template/classShell.stg");
+        ST st = group.getInstanceOf("classShell");
+        st.add("pkgName", packageName);
+        st.add("clsName", clsName);
+        st.add("superName", superName);
+        String s = st.render();
+        logger.trace(s);
+        return s;
     }
 
 

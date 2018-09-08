@@ -1,0 +1,6 @@
+
+classShell(pkgName, clsName, superName) ::= <<
+    package <pkgName>;
+
+    public class <clsName> extends <superName> {
+>>
