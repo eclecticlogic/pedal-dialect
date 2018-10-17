@@ -128,7 +128,8 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
         classBody.append("\n");
         classBody.append("}");
 
-        return Reflect.compile(COPY_EXTRACTOR_PACKAGE + "." + className, classBody.toString()).create().get();
+        return Reflect.on(Compile.compile(COPY_EXTRACTOR_PACKAGE + "." + className, classBody.toString()))
+                .create().get();
     }
 
 
