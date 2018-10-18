@@ -33,8 +33,6 @@ import com.google.common.collect.Sets;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -55,8 +53,6 @@ import java.util.Date;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = JpaConfiguration.class)
 public class TestPedalDialect {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TestPedalDialect.class);
 
     @Autowired
     private ProviderAccess providerAccess;
@@ -227,8 +223,7 @@ public class TestPedalDialect {
             // conversion is properly handled.
             et.setTotal(i * 10);
             et.setStudent(student);
-            // too much memory used.
-            // et.setImage(Files.readAllBytes(Paths.get(".", "src/test/resources/binary.data")));
+            // et.setImage too much memory used.
             list.add(et);
 
             if (list.size() % Math.pow(2, power) == 0) {
@@ -237,16 +232,6 @@ public class TestPedalDialect {
                 power++;
             }
         }
-
-        //copyCommand.insert(entityManager, list);
-
-        Assert.assertNotNull(entityManager.find(ExoticTypes.class, "copyCommand0"));
-        Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getCustom(), "THIS WILL BE MADE UPPERCASE");
-        Assert.assertNotNull(entityManager.find(ExoticTypes.class, "copyCommand1"));
-        Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getAuthorizations(), Sets.newHashSet("b", "c", "a"));
-
-        // Nullable converted value should be written as null.
-        Assert.assertNull(entityManager.find(ExoticTypes.class, "copyCommand0").getColor());
     }
 
     @Test
