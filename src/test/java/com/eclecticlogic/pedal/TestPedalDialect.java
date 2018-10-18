@@ -28,9 +28,7 @@ import com.eclecticlogic.pedal.dm.Status;
 import com.eclecticlogic.pedal.dm.Student;
 import com.eclecticlogic.pedal.dm.VehicleIdentifier;
 import com.eclecticlogic.pedal.provider.ProviderAccess;
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,8 +47,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.BitSet;
 import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author kabram.
