@@ -18,6 +18,7 @@ package com.eclecticlogic.pedal.dialect.postgresql;
 
 import com.eclecticlogic.pedal.dialect.postgresql.eval.EvaluatorChain;
 import com.eclecticlogic.pedal.dialect.postgresql.eval.MethodEvaluator;
+import com.google.common.base.Stopwatch;
 import org.joor.Reflect;
 import org.postgresql.copy.CopyIn;
 import org.postgresql.copy.CopyManager;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.toList;
@@ -70,7 +72,7 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
             try {
                 CopyManager copyManager = new CopyManager((BaseConnection) connectionAccessor.getRawConnection(connection));
                 Encoding encoding = ((BaseConnection)connectionAccessor.getRawConnection(connection)).getEncoding();
-                long t1 = System.currentTimeMillis();
+                Stopwatch timer = Stopwatch.createStarted();
                 CopyIn cp = copyManager.copyIn("copy " + getEntityName(entityList) + "(" + extractor.getFieldList() + ") from stdin");
                 long records;
                 try {
@@ -85,8 +87,7 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
                     }
                 }
                 assert records == entityList.size();
-                long elapsedTime = System.currentTimeMillis() - t1;
-                logger.info("Wrote {} inserts in {} seconds", records, Math.round(elapsedTime / 10.0) / 100.0);
+                logger.info("Wrote {} inserts in {}", records, timer.stop());// auto-selects units
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage(), e);
             }

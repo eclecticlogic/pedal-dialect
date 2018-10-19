@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2014-2015 Eclectic Logic LLC
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 package com.eclecticlogic.pedal;
 
@@ -166,7 +166,7 @@ public class TestPedalDialect {
             }
             et.setStatus(Status.ACTIVE);
             et.setCustom("this will be made uppercase");
-            et.setColor(Color.BLACK); // Black is converted to null. This is to test and ensure null value is 
+            et.setColor(Color.BLACK); // Black is converted to null. This is to test and ensure null value is
              // conversion is properly handled.
             et.setTotal(i * 10);
             et.setStudent(student);
@@ -181,11 +181,58 @@ public class TestPedalDialect {
         Assert.assertNotNull(entityManager.find(ExoticTypes.class, "copyCommand1"));
         Assert.assertEquals(entityManager.find(ExoticTypes.class, "copyCommand0").getAuthorizations(),
                 Sets.newHashSet("b", "c", "a"));
-        
+
         // Nullable converted value should be written as null.
         Assert.assertNull(entityManager.find(ExoticTypes.class, "copyCommand0").getColor());
     }
 
+
+    @Test
+    @Transactional
+    public void testBulkCopyCommand() {
+        CopyList<ExoticTypes> list = new CopyList<>();
+
+        Student student = new Student();
+        student.setGpa(4.0f);
+        student.setIdBase("exotic_student");
+        student.setMiddleName("joe1");
+        student.setName("schmoe1");
+        student.setZone("z");
+        student.setInsertedOn(new Date());
+        entityManager.persist(student);
+
+        int power = 0;
+        double limit = Math.pow(2, 20);
+        for (int i = 0; i <= limit; i++) {
+            ExoticTypes et = new ExoticTypes();
+            et.setLogin("copyCommand" + i);
+            BitSet bs = new BitSet(7);
+            bs.set(1);
+            bs.set(3);
+            bs.set(4);
+            et.setCountries(bs);
+            et.setAuthorizations(Sets.newHashSet("a", "b", "b", "c"));
+            if (i != 9) {
+                et.setScores(Lists.newArrayList(1L, 2L, 3L));
+            } else {
+                et.setScores(Lists.<Long> newArrayList());
+            }
+            et.setStatus(Status.ACTIVE);
+            et.setCustom("this will be made uppercase");
+            et.setColor(Color.BLACK); // Black is converted to null. This is to test and ensure null value is
+            // conversion is properly handled.
+            et.setTotal(i * 10);
+            et.setStudent(student);
+            // et.setImage too much memory used.
+            list.add(et);
+
+            if (list.size() % Math.pow(2, power) == 0) {
+                copyCommand.insert(entityManager, list);
+                list.clear();
+                power++;
+            }
+        }
+    }
 
     @Test
     @Transactional
@@ -239,8 +286,8 @@ public class TestPedalDialect {
         copyCommand.insert(entityManager, list);
         Assert.assertNotNull(entityManager.find(EmbedSimple.class, "joe"));
     }
-    
-    
+
+
     @Test
     @Transactional
     public void testCopyCommandEmbedOverride() {
