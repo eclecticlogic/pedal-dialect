@@ -155,6 +155,10 @@ Here is the general pattern of usage for the Copy Command:
 
 ## Release Notes
 
+### 1.5.2
+
+- Reverted to Javassist since joor cannot work inside spring-boot super-jars.
+
 ### 1.5.1
 
 - Fix to work with classpath in web applications

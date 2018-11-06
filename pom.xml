@@ -196,9 +196,10 @@
             <version>1.10</version>
         </dependency>
         <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>joor-java-8</artifactId>
-            <version>0.9.9</version>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.24.0-GA</version>
+            <type>bundle</type>
         </dependency>
 
         <!-- Connection accessors. One of these must be provided by your application -->

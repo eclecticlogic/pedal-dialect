@@ -19,7 +19,7 @@ package com.eclecticlogic.pedal.dialect.postgresql;
 import com.eclecticlogic.pedal.dialect.postgresql.eval.EvaluatorChain;
 import com.eclecticlogic.pedal.dialect.postgresql.eval.MethodEvaluator;
 import com.google.common.base.Stopwatch;
-import org.joor.Reflect;
+import javassist.*;
 import org.postgresql.copy.CopyIn;
 import org.postgresql.copy.CopyManager;
 import org.postgresql.core.BaseConnection;
@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.stream.Collectors.toList;
@@ -119,18 +118,23 @@ public class CopyCommandImpl extends AbstractCopyCommandImpl {
     protected <E extends Serializable> CopyExtractor<E> getExtractor(Class<E> clz) {
         List<CopyAttribute> attributes = getAttributesOfInterest(clz);
 
-        String className = clz.getSimpleName() + "$Extractor_" + extractorNameSuffix.incrementAndGet();
-        StringBuilder classBody = new StringBuilder();
-        classBody.append(getClassShell(COPY_EXTRACTOR_PACKAGE, className, AbstractCopyExtractor.class.getName()));
-        classBody.append("\n");
-        classBody.append(getFieldListBody(attributes));
-        classBody.append("\n");
-        classBody.append(getValueListBody(attributes, clz));
-        classBody.append("\n");
-        classBody.append("}");
+        ClassPool pool = ClassPool.getDefault();
+        pool.insertClassPath(new ClassClassPath(AbstractCopyExtractor.class));
+        CtClass cc = pool.makeClass(COPY_EXTRACTOR_PACKAGE + clz.getSimpleName() + "$Extractor_" + extractorNameSuffix
+                .incrementAndGet());
+        try {
+            cc.setSuperclass(pool.get(AbstractCopyExtractor.class.getName()));
 
-        return Reflect.on(Compile.compile(COPY_EXTRACTOR_PACKAGE + "." + className, classBody.toString()))
-                .create().get();
+            cc.addMethod(CtNewMethod.make(getFieldListBody(attributes), cc));
+            cc.addMethod(CtNewMethod.make(getValueListBody(attributes, clz), cc));
+        } catch (CannotCompileException | NotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            return (CopyExtractor<E>) cc.toClass().newInstance();
+        } catch (CannotCompileException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
