@@ -1,0 +1,8 @@
+title: Pedal-dialect
+description: Dialect (database) and provider (e.g. Hibernate) specific supporting implementations for Pedal and related frameworks.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-tactile
+
+gems:
+  - jekyll-mentions
