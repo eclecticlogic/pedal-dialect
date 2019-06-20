@@ -253,6 +253,6 @@
     <properties>
         <version.hibernate>5.2.0.Final</version.hibernate>
         <version.slf4j>1.2.3</version.slf4j>
-        <version.postgresql.jdbc>42.2.4</version.postgresql.jdbc>
+        <version.postgresql.jdbc>42.2.6</version.postgresql.jdbc>
     </properties>
 </project>
