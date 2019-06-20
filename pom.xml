@@ -4,7 +4,7 @@
     <name>Pedal Dialect</name>
     <groupId>com.eclecticlogic</groupId>
     <artifactId>pedal-dialect</artifactId>
-    <version>1.5.2-SNAPSHOT</version>
+    <version>1.5.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <description>Pedal-dialect is a collection of dialect (database) and provider (e.g. Hibernate) specific implementations for use with JPA. It enables non-standard SQL data types (arrays, sets, bit-sets) and dialect specific features such as support for the Postgresql Copy command.</description>
@@ -196,9 +196,9 @@
             <version>1.10</version>
         </dependency>
         <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>joor-java-8</artifactId>
-            <version>0.9.9</version>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.24.0-GA</version>
         </dependency>
 
         <!-- Connection accessors. One of these must be provided by your application -->

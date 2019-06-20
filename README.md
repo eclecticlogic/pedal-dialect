@@ -22,7 +22,7 @@ Download the pedal-dialect jar from Maven central:
 ```
 	<groupId>com.eclecticlogic</groupId>
 	<artifactId>pedal-dialect</artifactId>
-	<version>1.5.0</version>
+	<version>1.5.3</version>
 
 ```
 
@@ -154,6 +154,14 @@ Here is the general pattern of usage for the Copy Command:
 
 
 ## Release Notes
+
+### 1.5.3
+
+- Upgraded Hikari dependency to 3.3.0
+
+### 1.5.2
+
+- Reverted to Javassist since joor cannot work inside spring-boot super-jars.
 
 ### 1.5.1
 
