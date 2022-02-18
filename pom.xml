@@ -251,7 +251,7 @@
     </dependencies>
 
     <properties>
-        <version.hibernate>5.2.0.Final</version.hibernate>
+        <version.hibernate>5.4.24.Final</version.hibernate>
         <version.slf4j>1.2.3</version.slf4j>
         <version.postgresql.jdbc>42.3.3</version.postgresql.jdbc>
     </properties>
