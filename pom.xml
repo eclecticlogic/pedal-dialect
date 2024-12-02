@@ -176,7 +176,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>5.3.20</version>
+            <version>6.1.14</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
